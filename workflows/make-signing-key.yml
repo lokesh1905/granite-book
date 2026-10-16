@@ -1,0 +1,33 @@
+name: Make signing key
+# Run ONCE, only while the repository is PRIVATE. It prints 4 secrets on the run's Summary page; copy them into
+# Settings > Secrets and variables > Actions, then DELETE this run and this file.
+on:
+  workflow_dispatch:
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    env:
+      ALREADY: ${{ secrets.KEYSTORE_B64 }}
+      IS_PRIVATE: ${{ github.event.repository.private }}
+    steps:
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - name: Refuse if the repo is public or a key already exists
+        run: |
+          if [ "$IS_PRIVATE" != "true" ]; then echo "::error::Make the repository private first (Settings > General > Danger zone)."; exit 1; fi
+          if [ -n "$ALREADY" ]; then echo "::error::KEYSTORE_B64 already exists. A new key would stop updates installing over the current app."; exit 1; fi
+      - name: Create the keys
+        run: |
+          PASS=$(openssl rand -hex 16)
+          keytool -genkeypair -keystore gb.keystore -storepass "$PASS" -keypass "$PASS" -alias granitebook -keyalg RSA -keysize 4096 -validity 36500 -dname "CN=Granite Book, O=Lokesh, C=IN"
+          RK=$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=\n')
+          CK=$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=\n')
+          {
+            echo "## Copy these 4 values into GitHub secrets (and RELEASE_KEY / CHECK_KEY into Code.gs), then delete this run"
+            echo
+            echo "**KEYSTORE_PASS**"; echo; echo '```'; echo "$PASS"; echo '```'
+            echo "**RELEASE_KEY**"; echo; echo '```'; echo "$RK"; echo '```'
+            echo "**CHECK_KEY**"; echo; echo '```'; echo "$CK"; echo '```'
+            echo "**KEYSTORE_B64**"; echo; echo '```'; base64 -w0 gb.keystore; echo; echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          
