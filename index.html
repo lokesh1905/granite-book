@@ -2283,8 +2283,8 @@ var ROLE='o',WHO=null;try{ROLE=sessionStorage.getItem('gb_role')||'o';WHO=JSON.p
 var WK=!!CO&&ROLE==='w'&&!!WHO,ME={name:'Owner',wid:''};
 var KEY=WK?'gb_wk_'+CO:SFX?'gb_data'+SFX:'gb_data_v1',DKEY=WK?'gb_wkd_'+CO:SFX?'gb_draft'+SFX:'gb_draft_v1',MINROWS=5;
 var $=function(s){return document.querySelector(s)};
-var APP_VER='2.9.20';
-var APP_LOG=[['2.9.20','New “Tally-style PDF” button on a saved bill: one framed A4 tax invoice (GSTIN, billed to / shipped to, HSN, CGST/SGST, tax summary, amount in words, bank details, terms, signature). The existing Share PDF is unchanged.'],['2.9.19','Quick billing view: pick “⚡ Quick” on the bill, type an item (e.g. araldite), Enter, quantity, Enter, rate, Enter and it is added. Granite opens the sizes screen and comes back. Keyboard keys: F1 save, F2 granite, F3 item, F4 charge, F6 customer, F7 C/O, F8 discount, F9 received, Esc back, ? lists all keys. Works in Classic view too.'],['2.9.18','Forgot password: the owner can make a new password for any staff (Staff, open him, Edit, “Forgot password?”). Cutter screen has a new look with job cards, today summary and bottom tabs; he can switch back to Classic in his Profile. Vehicles removed from the owner menu. Camera and photo matching removed.'],['2.9.17','C/O contractors: pick or add a contractor on the bill (name or mobile). New Contractors page with customers brought, sales, pending and profit. Shown in Reports (and CSV), Summary and on the bill and invoice. Fixed the Receive payment button being covered in the bill view.'],['2.9.16','Faster sync: a change is sent about 1 second after you make it (was 4), and the app checks the server again when you come back to it.'],['2.9.15','Press and hold (phone) or right-click (computer) a bill, customer, item, stock row, due or menu item for quick actions. Arrange menu in Settings; Requests moved up. Fingerprint login now works for several users on one phone, including admin, and asks once after login.'],['2.9.14','Item photos now sync as their own records, so they are kept when you refresh or when another phone edits the item. Update every phone and the laptop to this version.'],['2.9.13','Activity log in Settings (owner): who added, changed or deleted bills, items, stock, staff, attendance and payments, with date and time. Synced between phones.'],['2.9.12','Scan with the camera button at the top: read an item QR label, or take or choose a photo of a stone to find the closest items (top 3 with match %). Every item has a QR label (Items list and Stock details); New search button on every result.'],['2.9.11','Enter key moves to the next field while billing, in the measure sheet and in forms, and saves on the last one (like Tally). Items and stock can have up to 4 photos and a shelf or rack number; search finds items by shelf'],['2.9.10','Staff pages: Profile, Attendance (month calendar, tap a day, dropdown and Save), Money and advances (clear dates) and Requests (filters, compact, show more). Sidebar grouped. Admin attendance uses the same inline dropdown. Several loading photos at once, kept on the cutter phone and sent to the admin. Notification manager: filters, mark read, delete, mute. New teal G icon. Nos on the bill sizes sheet. Laptop link replaces Server connection and Sync phones'],['2.9.9','Payment reminders: promise-to-pay date and amount, repeat until paid, snooze, assign a follow-up to a staff member, reminders sync across devices and stop by themselves when the customer pays'],['2.9.8','Cutter view and request preview always show the number of pieces, even when it is 1. Staff and cutters see all their requests (bill requests and each attendance day) with Waiting, Approved or Rejected; Show more in My requests, the admin Recent list and the notification bell'],['2.9.7','Merged build: delivery, photos, cash close and piece rate (2.9.6) together with the bug fixes of the regression pass: backups include staff requests, narrow-phone top bar fix'],['2.9.6','Part delivery with a challan per trip, Today strip (late deliveries, cheques, cash), photos on jobs and from the cutter, challan on WhatsApp, cheque reminders the day before, daily cash close, piece-rate pay, larger jobs reach the cutter, backups keep the sync code'],['2.9.5','Fixes from the billing-to-delivery review: editing a bill no longer loses cutter, vehicle and driver; counter sales skip the job list; Delivered asks about money due; challan number, vehicle, receiver and e-way bill number; cutter is told when sizes change; stock shows what is still in the yard'],['2.9.4','The web page and the app installed from the link now update themselves: a green banner appears when a new version is online, with a Refresh now button'],['2.9.3','Notification centre (bell) for everyone: tap an item to open the page. Tapping a phone notification opens the right page. Requests now show the full bill (customer, sizes, amounts, job). Dark theme fixes'],['2.9.2','Refresh button in the top bar. Live sync now turns on by itself for the owner, so the laptop sees phone data after login without any setup'],['2.9.1','The laptop address shared from the phone now points to the granite-book web page'],['2.9.0','Cutters get My profile: attendance marking (admin approves), days, money, advances, salary slip PDF. Fingerprint login on Android for everyone. New bill pulls the latest data first so bill numbers do not clash. Needs the new Code.gs for the cutter profile'],['2.8.0','Karigar is now Staff. Requests inbox: staff ask, you approve (delete or edit a saved bill, reopen a done job, attendance). Staff mark their own attendance for your approval. Attendance is a dropdown. My profile page for staff. Salary slip PDF. Done jobs are locked for the cutter. Staff rights now include Edit'],['2.7.0','Manage companies screen for the admin (rename, reset password, remove, add). Eye button to see passwords. Suggested user name and password for new staff. Update banner. Sync every 10 seconds with a status light. No PIN at app start. Staff rights now include Delete and Returns. Fixed: password lost when login switched off then on'],['2.6.0','Cloud login: on a laptop or a new phone just open the web address and log in, your data loads by itself. No codes to copy. Share the web address from Settings'],['2.5.0','One login screen for everybody (user name and password only), company switching after login, Users and rights for staff, switch off a login and keep the record'],['2.4.4','Connection code check no longer rejects shorter keys and says exactly what is wrong'],['2.4.3','Companies are sent to your online server as soon as the app opens, so a forgotten password can be reset from the sheet'],['2.4.2','Private link now points to the separate public web repo granite-web'],['2.4.1','Log out button at the bottom of the menu for everyone, staff and cutter logins can be saved and tested on the same phone, wage optional for a karigar, clearer message when the online script is old'],['2.4.0','Nos (number of pieces) for every size row: sqft = (length + plus) x (width + plus) x nos / 144. Shown on the measuring sheet, bill, sizes PDF, estimates and the cutter view'],['2.3.2','Copy buttons work in every browser, saving a bill with a typed but unadded customer now opens the add-customer form, Enter adds a new customer'],['2.3.1','A permanent private link: open it once on the laptop and it connects by itself, then bookmark it'],['2.3.0','Use the same app on a laptop: open index.html or the web address in any browser, paste the connection code from your phone, then company logins, live sync and backups work there too. Can be installed as a web app'],['2.2.0','Cash book and expenses, weekly and monthly summary, staff logins, combine estimates into one bill and customer on estimates, monthly customer statements, vehicle and driver log, idle lock, loader enters the vehicle number'],['2.1.0','Cutter and loader login on his own phone with only his assigned jobs and sizes, job notifications, thermal receipt, cheque tracking, all companies summary, remove company, new companies start without sample customers'],['2.0.0','Multiple companies: choose a company at start, log in with user name and password, switch company from Settings, logins kept online, backups in one folder with a sub folder per company'],['1.3.0','PDF options in Settings, sizes and payments as separate PDFs, plus not printed and default plus, WhatsApp and follow-up reminders per bill, settings saved in backup'],['1.2.0','Stock, purchases and suppliers with profit per bill; credit notes and returns; extra charges on bills; last rate per customer; one-tap overdue reminders; rate list PDF'],['1.1.0','Compact or classic list style; Jobs and delivery challan; Karigar wages; item photos and QR labels; live sync between phones'],['1.0.9','Compact Customers list; tap a customer to open the ledger; Advance now inside the ledger'],['1.0.8','Bill PDF shows item names only; choose to print sizes on a last page'],['1.0.7','Fixes from full testing: fast typing, bill in progress banner, zero rate and zero size checks, cleaner GST PDF'],['1.0.6','Security and bug fixes: encrypted phone backup, stronger PIN, safer restore and export, payment and advance fixes'],['1.0.5','Back button and navigation; one Backup button; proper bill PDF; auto update on open; bank and terms on bills'],['1.0.4','GST tax invoice (Tally style); reports with CSV export; PIN lock with owner and staff; WhatsApp to a number; advance without a bill'],['1.0.3','Payments and dues; customer ledger; share bills as PDF; make a bill from an estimate'],['1.0.2','Light theme by default; Kadappa half-foot sizing; scrambled automatic backup to Google Drive'],['1.0.1','Estimate page; item categories; length and width must both be filled'],['1.0.0','First release']];
+var APP_VER='2.9.23';
+var APP_LOG=[['2.9.23','Several devices can bill at the same time: a bill number is reserved on the server when billing starts (an abandoned number is given back), so numbers never clash. Joining or logging in now MERGES: every bill and record from this device and from all other devices are kept together, nothing is replaced. Payments added to the same bill on two devices are both kept. Needs the updated Code.gs (bill-number actions) in Google Apps Script.'],['2.9.22','Login now opens the company’s real online data by itself: no Join / Replace / Merge questions. If this device held a different copy, it is kept as a safety copy on the device first.'],['2.9.21','Sync: a device no longer silently replaces the shop’s online sync code. If this device is syncing a different copy than the one saved online (the cause of one device showing different bills), it asks whether to join the online copy or keep this one as the main. Tap the small sync dot to see its status or error.'],['2.9.20','New “Tally-style PDF” button on a saved bill: one framed A4 tax invoice (GSTIN, billed to / shipped to, HSN, CGST/SGST, tax summary, amount in words, bank details, terms, signature). The existing Share PDF is unchanged.'],['2.9.19','Quick billing view: pick “⚡ Quick” on the bill, type an item (e.g. araldite), Enter, quantity, Enter, rate, Enter and it is added. Granite opens the sizes screen and comes back. Keyboard keys: F1 save, F2 granite, F3 item, F4 charge, F6 customer, F7 C/O, F8 discount, F9 received, Esc back, ? lists all keys. Works in Classic view too.'],['2.9.18','Forgot password: the owner can make a new password for any staff (Staff, open him, Edit, “Forgot password?”). Cutter screen has a new look with job cards, today summary and bottom tabs; he can switch back to Classic in his Profile. Vehicles removed from the owner menu. Camera and photo matching removed.'],['2.9.17','C/O contractors: pick or add a contractor on the bill (name or mobile). New Contractors page with customers brought, sales, pending and profit. Shown in Reports (and CSV), Summary and on the bill and invoice. Fixed the Receive payment button being covered in the bill view.'],['2.9.16','Faster sync: a change is sent about 1 second after you make it (was 4), and the app checks the server again when you come back to it.'],['2.9.15','Press and hold (phone) or right-click (computer) a bill, customer, item, stock row, due or menu item for quick actions. Arrange menu in Settings; Requests moved up. Fingerprint login now works for several users on one phone, including admin, and asks once after login.'],['2.9.14','Item photos now sync as their own records, so they are kept when you refresh or when another phone edits the item. Update every phone and the laptop to this version.'],['2.9.13','Activity log in Settings (owner): who added, changed or deleted bills, items, stock, staff, attendance and payments, with date and time. Synced between phones.'],['2.9.12','Scan with the camera button at the top: read an item QR label, or take or choose a photo of a stone to find the closest items (top 3 with match %). Every item has a QR label (Items list and Stock details); New search button on every result.'],['2.9.11','Enter key moves to the next field while billing, in the measure sheet and in forms, and saves on the last one (like Tally). Items and stock can have up to 4 photos and a shelf or rack number; search finds items by shelf'],['2.9.10','Staff pages: Profile, Attendance (month calendar, tap a day, dropdown and Save), Money and advances (clear dates) and Requests (filters, compact, show more). Sidebar grouped. Admin attendance uses the same inline dropdown. Several loading photos at once, kept on the cutter phone and sent to the admin. Notification manager: filters, mark read, delete, mute. New teal G icon. Nos on the bill sizes sheet. Laptop link replaces Server connection and Sync phones'],['2.9.9','Payment reminders: promise-to-pay date and amount, repeat until paid, snooze, assign a follow-up to a staff member, reminders sync across devices and stop by themselves when the customer pays'],['2.9.8','Cutter view and request preview always show the number of pieces, even when it is 1. Staff and cutters see all their requests (bill requests and each attendance day) with Waiting, Approved or Rejected; Show more in My requests, the admin Recent list and the notification bell'],['2.9.7','Merged build: delivery, photos, cash close and piece rate (2.9.6) together with the bug fixes of the regression pass: backups include staff requests, narrow-phone top bar fix'],['2.9.6','Part delivery with a challan per trip, Today strip (late deliveries, cheques, cash), photos on jobs and from the cutter, challan on WhatsApp, cheque reminders the day before, daily cash close, piece-rate pay, larger jobs reach the cutter, backups keep the sync code'],['2.9.5','Fixes from the billing-to-delivery review: editing a bill no longer loses cutter, vehicle and driver; counter sales skip the job list; Delivered asks about money due; challan number, vehicle, receiver and e-way bill number; cutter is told when sizes change; stock shows what is still in the yard'],['2.9.4','The web page and the app installed from the link now update themselves: a green banner appears when a new version is online, with a Refresh now button'],['2.9.3','Notification centre (bell) for everyone: tap an item to open the page. Tapping a phone notification opens the right page. Requests now show the full bill (customer, sizes, amounts, job). Dark theme fixes'],['2.9.2','Refresh button in the top bar. Live sync now turns on by itself for the owner, so the laptop sees phone data after login without any setup'],['2.9.1','The laptop address shared from the phone now points to the granite-book web page'],['2.9.0','Cutters get My profile: attendance marking (admin approves), days, money, advances, salary slip PDF. Fingerprint login on Android for everyone. New bill pulls the latest data first so bill numbers do not clash. Needs the new Code.gs for the cutter profile'],['2.8.0','Karigar is now Staff. Requests inbox: staff ask, you approve (delete or edit a saved bill, reopen a done job, attendance). Staff mark their own attendance for your approval. Attendance is a dropdown. My profile page for staff. Salary slip PDF. Done jobs are locked for the cutter. Staff rights now include Edit'],['2.7.0','Manage companies screen for the admin (rename, reset password, remove, add). Eye button to see passwords. Suggested user name and password for new staff. Update banner. Sync every 10 seconds with a status light. No PIN at app start. Staff rights now include Delete and Returns. Fixed: password lost when login switched off then on'],['2.6.0','Cloud login: on a laptop or a new phone just open the web address and log in, your data loads by itself. No codes to copy. Share the web address from Settings'],['2.5.0','One login screen for everybody (user name and password only), company switching after login, Users and rights for staff, switch off a login and keep the record'],['2.4.4','Connection code check no longer rejects shorter keys and says exactly what is wrong'],['2.4.3','Companies are sent to your online server as soon as the app opens, so a forgotten password can be reset from the sheet'],['2.4.2','Private link now points to the separate public web repo granite-web'],['2.4.1','Log out button at the bottom of the menu for everyone, staff and cutter logins can be saved and tested on the same phone, wage optional for a karigar, clearer message when the online script is old'],['2.4.0','Nos (number of pieces) for every size row: sqft = (length + plus) x (width + plus) x nos / 144. Shown on the measuring sheet, bill, sizes PDF, estimates and the cutter view'],['2.3.2','Copy buttons work in every browser, saving a bill with a typed but unadded customer now opens the add-customer form, Enter adds a new customer'],['2.3.1','A permanent private link: open it once on the laptop and it connects by itself, then bookmark it'],['2.3.0','Use the same app on a laptop: open index.html or the web address in any browser, paste the connection code from your phone, then company logins, live sync and backups work there too. Can be installed as a web app'],['2.2.0','Cash book and expenses, weekly and monthly summary, staff logins, combine estimates into one bill and customer on estimates, monthly customer statements, vehicle and driver log, idle lock, loader enters the vehicle number'],['2.1.0','Cutter and loader login on his own phone with only his assigned jobs and sizes, job notifications, thermal receipt, cheque tracking, all companies summary, remove company, new companies start without sample customers'],['2.0.0','Multiple companies: choose a company at start, log in with user name and password, switch company from Settings, logins kept online, backups in one folder with a sub folder per company'],['1.3.0','PDF options in Settings, sizes and payments as separate PDFs, plus not printed and default plus, WhatsApp and follow-up reminders per bill, settings saved in backup'],['1.2.0','Stock, purchases and suppliers with profit per bill; credit notes and returns; extra charges on bills; last rate per customer; one-tap overdue reminders; rate list PDF'],['1.1.0','Compact or classic list style; Jobs and delivery challan; Karigar wages; item photos and QR labels; live sync between phones'],['1.0.9','Compact Customers list; tap a customer to open the ledger; Advance now inside the ledger'],['1.0.8','Bill PDF shows item names only; choose to print sizes on a last page'],['1.0.7','Fixes from full testing: fast typing, bill in progress banner, zero rate and zero size checks, cleaner GST PDF'],['1.0.6','Security and bug fixes: encrypted phone backup, stronger PIN, safer restore and export, payment and advance fixes'],['1.0.5','Back button and navigation; one Backup button; proper bill PDF; auto update on open; bank and terms on bills'],['1.0.4','GST tax invoice (Tally style); reports with CSV export; PIN lock with owner and staff; WhatsApp to a number; advance without a bill'],['1.0.3','Payments and dues; customer ledger; share bills as PDF; make a bill from an estimate'],['1.0.2','Light theme by default; Kadappa half-foot sizing; scrambled automatic backup to Google Drive'],['1.0.1','Estimate page; item categories; length and width must both be filled'],['1.0.0','First release']];
 var db={aud:[],rem:[],exp:[],vehicles:[],trips:[],cclose:[],staff:[],expCats:[],sumOn:0,sumSeen:0,pdf:{sizes:0,pays:0,est:1},view:'',workers:[],att:[],wpay:[],req:[],returns:[],suppliers:[],purchases:[],spay:[],sadj:[],nextCn:1,granites:[],items:[],estimates:[],itemsSeeded:false,updAuto:true,updCheck:0,sheets:[],bills:[],nextNo:1,lastBackup:0,customers:[],contractors:[],seeded:false,profile:{name:'',address:'',mobile:'',email:'',gst:'',gstOn:'off',pre:'',defGst:'18',defPlus:'1',bank:'',bankN:'',bankA:'',bankI:'',bankB:'',upi:'',terms:''},theme:'light',advances:[],units:[],lock:{own:'',stf:'',salt:'',n:0,until:0}};
 var cur=blank();
 var bill=newBill();
@@ -3627,7 +3627,7 @@ function billDetail(id){
   $('#mbox').onclick=function(e){
     var pdl=e.target.closest('[data-pd]');
     if(pdl){if(denyStaff('Delete'))return;ask('Remove this payment?','The balance due will go up by this amount.',[{t:'Cancel'},{t:'Remove',cls:'dng',v:1}]).then(function(v){
-      if(v){b.pays=pays(b).filter(function(p){return p.id!==pdl.dataset.pd});persist();counts();refreshMoney()}billDetail(id)});return}
+      if(v){b.pays=pays(b).filter(function(p){return p.id!==pdl.dataset.pd});b.pdel=(b.pdel||[]).concat([pdl.dataset.pd]).slice(-50);b.updated=Date.now();persist();counts();refreshMoney()}billDetail(id)});return}
     var cnb=e.target.closest('[data-cn]');if(cnb){var rr=db.returns.find(function(x){return x.id===cnb.dataset.cn});if(rr){closeMod();sharePdf(cnDoc(rr),'CreditNote-'+pad(rr.no)+'-'+fsafe((rr.cust&&rr.cust.name)||'')+'.pdf')}return}
     var bt=e.target.closest('[data-a]');if(!bt)return;var a=bt.dataset.a;
     if(a==='p'){payForm('Receive payment · #'+pad(b.no),du,function(p){if(p){addPay(b,p);persist();counts();toast('Payment saved');refreshMoney()}billDetail(id)});return}
@@ -4111,7 +4111,7 @@ function lineDetail(l){
     l.rows.map(function(r,i){var q=sq(r,l.plus,l.mode);return '<tr><td>'+(i+1)+'</td><td>'+esc(r.l||'–')+' × '+esc(r.w||'–')+' × '+nos(r)+' nos'+'</td><td>'+(q===null?'–':f2(q))+'</td></tr>'}).join('')+'<tr class="tt"><td></td><td>Total</td><td>'+f2(l.sqft)+'</td></tr></table>';
 }
 function renderBill(){
-  bvApply();var c=bill.cust;
+  bvApply();bnTouch();var c=bill.cust;
   $('#custPick').hidden=!!c;$('#custSel').hidden=!c;
   if(c){$('#custAv').textContent=(c.name||'?').charAt(0).toUpperCase();$('#custN').textContent=c.name;
     $('#custD').textContent=[c.mobile?'📞 '+c.mobile:'',c.gst?'GST '+c.gst:''].filter(Boolean).join(' · ')||'No mobile or GST on file'}
@@ -4343,7 +4343,7 @@ $('#custSug').addEventListener('mousedown',function(e){e.preventDefault();var d=
 $('#custSug').addEventListener('touchstart',function(e){var d=e.target.closest('[data-i]');if(d){e.preventDefault();pickCust(+d.dataset.i)}},{passive:false});
 $('#custChg').onclick=function(){bill.cust=null;bill.dirty=true;renderBill();draft();$('#custQ').focus()};
 
-function resetBill(){bill=newBill();renderBill();draft()}
+function resetBill(){var o=bill;if(o&&o.no&&!o.id&&!bnSaved[o.no]&&!bnUsed(o.no))bnBack(o.no);bill=newBill();renderBill();draft()}
 function hasWork(){return bill.dirty&&(bill.cust||bill.lines.length)}
 function saveBill(target){
   if(!bill.cust){var tq=$('#custQ').value.trim();if(tq){csItems=[{add:tq}];pickCust(0);toast('Add this customer, then press Save bill again')}else{toast('Choose or add a customer first');$('#custQ').focus()}return false}
@@ -4363,7 +4363,7 @@ function saveBill(target){
   var rec=Object.assign({},ex||{},{by:(ex&&ex.by)||ME.name,id:bill.id||uid(),no:bill.no||db.nextNo++,cust:bill.cust,ctr:bill.ctr||'',ctrN:bill.ctr?ctrNameOf(bill):'',lines:bill.lines.map(function(l){return Object.assign({},l,{hsn:lineHsn(l),gr:lineGr(l)})}),sub:s.sub,disc:bill.disc,discAmt:s.d,sqft:s.s,amount:s.a,pays:np,tx:s.tx||null,inv:s.tx?(db.profile.pre||'')+pad(bill.no||db.nextNo-1):'',created:ex?ex.created:now,updated:now,job:ex?(ex.job||'dlv'):(hasSt?'new':'dlv'),jobNote:ex?ex.jobNote||'':'',jobDate:ex?ex.jobDate||'':(hasSt?'':new Date().toISOString().slice(0,10))});
   (bill.ests||(bill.est?[bill.est]:[])).forEach(function(eid){var es=db.estimates.find(function(x){return x.id===eid});if(es){es.billNo=rec.no;es.billId=rec.id}});
   var chg=!!ex&&jobOf(rec)!=='new'&&wasLn!==JSON.stringify(wkRec(rec).ln);if(chg)rec.edAt=now;
-  if(ex)db.bills[db.bills.indexOf(ex)]=rec;else db.bills.unshift(rec);
+  if(ex)db.bills[db.bills.indexOf(ex)]=rec;else{db.bills.unshift(rec);bnSaved[rec.no]=1;db.nextNo=Math.max(db.nextNo,rec.no+1);bnConfirm(rec.no)}
   persist();counts();resetBill();show(typeof target==='string'?target:'Home');toast('Bill #'+pad(rec.no)+' saved');
   if(chg)setTimeout(function(){toast('Job is already '+jobName(jobOf(rec))+(rec.asg?' – the cutter will be told':' – tell the cutter about the change'))},2600);
   return true;
@@ -5326,32 +5326,44 @@ function sySplit(k){var i=k.indexOf('|');return[k.slice(0,i),k.slice(i+1)]}
 function sySoon(){var s=db.sy;if(!s||!s.on||!window.GB_UPD)return;clearTimeout(syT);syT=setTimeout(syRun,1200)}
 function syRender(){var f={Home:renderHome,Items:renderItems,Estimate:renderEst,Dues:renderDues,Customers:renderCustomers,Contractors:renderContractors,Jobs:renderJobs,Karigar:renderKarigar,Stock:renderStock}[curPage];if(f&&!$('#mod').classList.contains('on'))f()}
 function syFixNos(){
-  var bl=db.bills.slice().sort(function(a,b){return (a.created||0)-(b.created||0)||(a.id<b.id?-1:1)}),seen={};
+  var jn=(db.sy&&db.sy.jn)||{},bl=db.bills.slice().sort(function(a,b){return (jn[a.id]?1:0)-(jn[b.id]?1:0)||(a.created||0)-(b.created||0)||(a.id<b.id?-1:1)}),seen={};
   bl.forEach(function(b){db.nextNo=Math.max(db.nextNo,(b.no||0)+1)});
-  bl.forEach(function(b){if(seen[b.no]){b.no=db.nextNo++;if(b.tx)b.inv=(db.profile.pre||'')+pad(b.no)}else seen[b.no]=1});
+  bl.forEach(function(b){if(seen[b.no]){b.no=db.nextNo++;if(b.tx)b.inv=(db.profile.pre||'')+pad(b.no);db.estimates.forEach(function(es){if(es.billId===b.id)es.billNo=b.no})}else seen[b.no]=1});
 }
+/* merge the payments of two copies of one bill by payment id; a deleted payment leaves a mark (pdel) so it does not come back */
+function payMerge(dst,src){
+  var del={};[dst.pdel,src.pdel].forEach(function(a){(a||[]).forEach(function(id){del[id]=1})});
+  var have={},ch=false,np=[];
+  (dst.pays||[]).forEach(function(p){if(p&&p.id&&del[p.id]){ch=true;return}if(p&&p.id)have[p.id]=1;np.push(p)});
+  (src.pays||[]).forEach(function(p){if(p&&p.id&&!have[p.id]&&!del[p.id]){have[p.id]=1;np.push(p);ch=true}});
+  var dl=Object.keys(del).slice(-50);if(dl.length!==(dst.pdel||[]).length){dst.pdel=dl;ch=true}
+  if(ch){np.sort(function(a,b){return (a.at||0)-(b.at||0)});dst.pays=np}
+  return ch}
 function syApply(list){
-  var s=db.sy,applied=[];
+  var s=db.sy,applied=[],pm=0;
   list=list.slice().sort(function(x,y){return (x.e.c==='iph')-(y.e.c==='iph')});
   list.forEach(function(it){
-    var e=it.e,k=e.c+'|'+e.id,mk=s.m[k];if(mk&&mk.u===e.u)return;
+    var e=it.e,k=e.c+'|'+e.id,mk=s.m[k],h0;if(mk&&mk.u===e.u)return;
     var all=syAll(),loc=all[k];
-    if(loc&&syHash(loc.v)!==(mk&&mk.h))return;            /* changed here since the last sync: our newer change goes up next */
+    if(loc&&syHash(loc.v)!==(mk&&mk.h)){                  /* changed here since the last sync: our newer change goes up next */
+      if(e.c==='bills'&&!e.x&&it.v&&payMerge(loc.v,it.v)){loc.v.updated=Date.now();pm=1}   /* a payment added on another device is kept, not lost */
+      return}
     if(!loc&&mk&&mk.h!=='x'&&!e.x)return;                  /* deleted here, delete is going up */
     if(e.c==='iph'){var itx=db.items.find(function(r){return r.id===e.id});
       if(itx){if(e.x){itx.photos=[];itx.photo=''}else if(it.v&&Array.isArray(it.v.p)){itx.photos=it.v.p.filter(function(x){return typeof x==='string'&&x.indexOf('data:image/jpeg')===0}).slice(0,4);itx.photo=itx.photos[0]||''}}}
     else if(SYC.indexOf(e.c)>-1){var a=db[e.c],i=a.findIndex(function(r){return r.id===e.id});
-      if(e.x){if(i>-1)a.splice(i,1)}else{it.v.id=e.id;if(e.c==='items'&&i>-1&&!it.v.photos&&!it.v.photo){it.v.photos=a[i].photos||[];it.v.photo=a[i].photo||''}if(i>-1)a[i]=it.v;else a.push(it.v)}}
+      if(e.x){if(i>-1)a.splice(i,1)}else{it.v.id=e.id;if(e.c==='items'&&i>-1&&!it.v.photos&&!it.v.photo){it.v.photos=a[i].photos||[];it.v.photo=a[i].photo||''}if(i>-1){if(e.c==='bills'&&it.v&&Array.isArray(it.v.pays)&&a[i]&&Array.isArray(a[i].pays)){var h1=syHash(it.v);if(payMerge(it.v,a[i])){h0=h1;it.v.updated=Date.now();pm=1}}a[i]=it.v}else a.push(it.v)}}
     else if(e.id==='profile'&&!e.x&&it.v&&typeof it.v==='object')db.profile=Object.assign({},db.profile,it.v);
     else if(e.id==='units'&&!e.x&&Array.isArray(it.v))db.units=it.v;
     else if(e.id==='nextNo'&&!e.x&&it.v)db.nextNo=Math.max(db.nextNo,cn(it.v.n)||1);
-    applied.push({k:k,u:e.u,x:!!e.x});
+    applied.push({k:k,u:e.u,x:!!e.x,h0:h0});
   });
-  if(!applied.length)return 0;
+  if(!applied.length){if(pm){persist(true);sySoon()}return 0}
+  if(pm){persist(true);sySoon()}
   audSn=null;
   sanitizeDb();syFixNos();
   db.bills.sort(function(a,b){return (b.created||0)-(a.created||0)});db.estimates.sort(function(a,b){return (b.updated||0)-(a.updated||0)});sortItems();
-  var all2=syAll();applied.forEach(function(x){if(x.x)s.m[x.k]={h:'x',u:x.u};else if(all2[x.k])s.m[x.k]={h:syHash(all2[x.k].v),u:x.u}});
+  var all2=syAll();applied.forEach(function(x){if(x.x)s.m[x.k]={h:'x',u:x.u};else if(all2[x.k])s.m[x.k]={h:x.h0||syHash(all2[x.k].v),u:x.u}});
   return applied.length;
 }
 function syDecode(recs){
@@ -5363,8 +5375,8 @@ function syRun(){
   if(syBusy){syAgain=true;return Promise.resolve()}
   syBusy=true;clearTimeout(syT);
   var all=syAll(),out=[],now=Date.now(),got=0,uid;
-  Object.keys(all).forEach(function(k){var h=syHash(all[k].v),m=s.m[k];if(!m||m.h!==h)out.push({k:k,c:all[k].c,id:all[k].id,u:now,v:all[k].v,h:h})});
-  Object.keys(s.m).forEach(function(k){if(!all[k]&&s.m[k].h!=='x'){var p=sySplit(k);out.push({k:k,c:p[0],id:p[1],u:now,x:1,h:'x'})}});
+  if(!s.hold)Object.keys(all).forEach(function(k){var h=syHash(all[k].v),m=s.m[k];if(!m||m.h!==h)out.push({k:k,c:all[k].c,id:all[k].id,u:now,v:all[k].v,h:h})});
+  if(!s.hold)Object.keys(s.m).forEach(function(k){if(!all[k]&&s.m[k].h!=='x'){var p=sySplit(k);out.push({k:k,c:p[0],id:p[1],u:now,x:1,h:'x'})}});
   function pull(){return gpost({action:'sy_sync',uid:uid,since:s.since,recs:[]}).then(handle)}
   function handle(r){
     if(!r||!r.ok)throw new Error(r&&r.err||'No reply');
@@ -5404,7 +5416,7 @@ function rfNow(){var b=$('#rfBtn');if(b){b.style.transition='transform .6s';b.st
   if(WK)wwSync();
   if(!WK&&ROLE==='s')staffAlive();
   Promise.all(ps).then(function(){counts();try{syRender()}catch(e){}toast(db.sy&&db.sy.on?(db.sy.err?'Could not sync: '+db.sy.err:'Up to date'):'Done')})}
-function syLight(){var e=$('#syLt');if(!e)return;var s=db.sy;
+function syLight(){var e=$('#syLt');if(!e)return;e.onclick=function(){toast(e.title||'Sync status')};var s=db.sy;
   if(!s||!s.on||!window.GB_UPD){e.hidden=true;return}
   e.hidden=false;var age=s.last?Date.now()-s.last:1e12;
   e.style.background=s.err?'#d33':(age<30000?'#2a9d4a':age<300000?'#e0a100':'#d33');
@@ -5430,15 +5442,18 @@ function syJoin(k,auto){
     if(!r||!r.ok)return(r&&r.err)||'No reply';
     if(r.empty)return 'No shared data found for that code.';
     closeMod();
-    return (auto?Promise.resolve('r'):ask('Join this shop?','Replace: this phone shows exactly the shared data and its own data is removed. Merge: keeps this phone’s data and adds the shared data (sample data is dropped).',[{t:'Cancel'},{t:'Merge',v:'m'},{t:'Replace',cls:'pri',v:'r'}])).then(function(v){
+    return (auto?Promise.resolve('m'):ask('Join this shop?','Replace: this phone shows exactly the shared data and its own data is removed. Merge: keeps this phone’s data and adds the shared data (sample data is dropped).',[{t:'Cancel'},{t:'Merge',v:'m'},{t:'Replace',cls:'pri',v:'r'}])).then(function(v){
       if(!v)return;
       if(v==='r'){SYC.forEach(function(c){db[c]=[]})}
       else{db.items=db.items.filter(function(i){return !i.sample});db.customers=db.customers.filter(function(c){return !c.dummy})}
-      db.sy={on:true,code:k,since:0,m:{},last:0,err:''};
+      db.sy={on:true,code:k,since:0,m:{},last:0,err:'',hold:1,jn:{}};db.bills.forEach(function(b){db.sy.jn[b.id]=1});   /* hold: first pull everything, only then send this device's own data */
       db.sy.m['k|units']={h:syHash(db.units),u:0};db.sy.m['k|nextNo']={h:syHash({n:db.nextNo}),u:0};
       if(v==='r'||!db.profile.name)db.sy.m['k|profile']={h:syHash(db.profile),u:0};
       persist(true);toast('Joining… please wait');
-      return syRun().then(function(){if(auto&&!db.sy.err){location.reload();return}counts();syRender();renderSy();toast(db.sy.err?'Could not sync: '+db.sy.err:'Joined. Data is in sync')});
+      return syRun().then(function(){
+        if(db.sy.err){delete db.sy.hold;persist(true);return}
+        delete db.sy.hold;persist(true);return syRun().then(function(){db.sy.jn=null;persist(true)})
+      }).then(function(){if(auto&&!db.sy.err){location.reload();return}counts();syRender();renderSy();toast(db.sy.err?'Could not sync: '+db.sy.err:'Joined. All data from this device and the shop is together');bnTop(true)});
     });
   }).catch(function(e){return 'Could not reach the server: '+(e&&e.message||e)});
 }
@@ -5451,9 +5466,18 @@ $('#syBtns').addEventListener('click',function(e){var b=e.target.closest('[data-
 });
 /* the sync code is kept on your server for logged-in users, so a laptop or a new phone joins by itself after login */
 function scAuth(){var c=coFind(CO)||{};if(ROLE==='o')return c.h?{h:c.h,r:'o'}:null;if(ROLE==='s'&&WHO)return{h:WHO.h,r:'s',wid:WHO.wid};return null}
+var scAsked=false;
+/* before this device switches to the online copy, keep what it had so nothing is lost */
+function scSafe(){try{localStorage.setItem('gb_prejoin',JSON.stringify({at:Date.now(),co:CO,json:backupJson()}))}catch(e){}}
 function scPut(){
   if(ROLE!=='o'||!window.GB_UPD||!db.sy||!db.sy.on||!db.sy.code||db.sy.sc===db.sy.code)return;var a=scAuth();if(!a)return;
-  gpost({action:'sc_put',co:CO,h:a.h,code:db.sy.code}).then(function(r){if(r&&r.ok){db.sy.sc=db.sy.code;persist(true)}}).catch(function(){})}
+  function put(){return gpost({action:'sc_put',co:CO,h:a.h,code:db.sy.code}).then(function(r){if(r&&r.ok){db.sy.sc=db.sy.code;persist(true)}})}
+  /* never silently replace the code saved online: a different one means another device already keeps the real shop data */
+  gpost({action:'sc_get',co:CO,h:a.h,r:a.r}).then(function(r){
+    if(!(r&&r.ok&&r.code&&r.code!==db.sy.code))return put();
+    if(scAsked)return;scAsked=true;scSafe();toast('Loading this company’s online data…');
+    return syJoin(r.code,true).then(function(m){if(m)toast(m)})
+  }).catch(function(){})}
 function scAutoJoin(){
   if(!window.GB_UPD||ROLE==='w'||(db.sy&&db.sy.on))return;var a=scAuth();if(!a)return;
   var fresh=!db.bills.length&&!db.estimates.length&&!db.customers.filter(function(c){return !c.dummy}).length;
@@ -5461,13 +5485,61 @@ function scAutoJoin(){
     if(r&&r.ok&&!r.code&&ROLE==='o'&&!fresh&&!(db.sy&&db.sy.on)){db.sy={on:true,code:bkNew(),since:0,m:{},last:0,err:''};persist(true);renderSy();toast('Live sync is on. Your laptop can now open this company');syRun().then(function(){scPut()});return}
     if(!r||!r.ok||!r.code)return;
     if(fresh){toast('Loading your company data…');syJoin(r.code,true).then(function(m){if(m)toast(m)})}
-    else ask('Shared data found','This company has live shared data online. Join it? You can choose Replace or Merge next.',[{t:'Later'},{t:'Join',cls:'pri',v:1}]).then(function(v){if(v)syJoin(r.code)})
+    else{scSafe();toast('Loading your company data…');syJoin(r.code,true).then(function(m){if(m)toast(m)})}
   }).catch(function(){})}
+/* ---------- shared bill numbers: a number is reserved on the server when billing starts, so two devices never get the same one ---------- */
+var BN_SPARE=0,bnBusy=false,bnLast=0,bnClaiming=false,bnSaved={};
+function bnDev(){var d='';try{d=localStorage.getItem('gb_dev')||'';if(!d){d='d'+uid()+Date.now().toString(36);localStorage.setItem('gb_dev',d)}}catch(e){}return d||'d0'}
+function bnOk(){return !!(db.sy&&db.sy.on&&!db.sy.hold&&db.sy.code&&window.GB_UPD&&navigator.onLine!==false&&!WK&&ROLE!=='w')}
+function bnLsGet(k,def){try{var v=JSON.parse(localStorage.getItem(k+'_'+(CO||''))||'null');return v||def}catch(e){return def}}
+function bnLsSet(k,v){try{localStorage.setItem(k+'_'+(CO||''),JSON.stringify(v))}catch(e){}}
+function bnSp(){return bnLsGet('gb_bn',[]).filter(function(n){return n>0})}
+function bnSpSet(a){bnLsSet('gb_bn',a)}
+function bnMax(){var m=(db.nextNo||1)-1;db.bills.forEach(function(b){if((b.no||0)>m)m=b.no});return Math.max(0,m)}
+function bnUsed(n){return db.bills.some(function(b){return b.no===n})}
+function bnReq(action,o){return bkKeys(db.sy.code).then(function(k){return gpost(Object.assign({action:action,uid:k.uid,dev:bnDev()},o))})}
+function bnSub(){if(curPage==='Bill'&&bill){var t=$('#tsub');if(t)t.textContent='Bill #'+pad(bill.no||db.nextNo)+(bill.dirty?' · unsaved':'')}}
+/* ask for n numbers; numbers a synced bill already uses are confirmed (so the server stops offering them) and replaced */
+function bnAcq(n,have,d){
+  return bnReq('bn_reserve',{max:bnMax(),have:have||[],n:n}).then(function(r){
+    if(!r||!r.ok)throw new Error('no reply');
+    var good=[],bad=[];(r.nums||[]).forEach(function(x){(bnUsed(x)?bad:good).push(x)});
+    bad.forEach(function(x){bnReq('bn_confirm',{no:x}).catch(function(){})});
+    if(bad.length&&(d||0)<3)return bnAcq(bad.length,[],(d||0)+1).then(function(m){return{r:r,nums:good.concat(m.nums)}});
+    return{r:r,nums:good}})}
+function bnBack(n){if(bnOk())bnReq('bn_release',{nos:[n]}).catch(function(){})}   /* an abandoned number goes straight back to the free list */
+function bnFlush(){
+  if(!bnOk())return;var q=bnLsGet('gb_bnq',[]);if(!q.length)return;
+  q.forEach(function(n){bnReq('bn_confirm',{no:n}).then(function(r){if(r&&r.ok)bnLsSet('gb_bnq',bnLsGet('gb_bnq',[]).filter(function(x){return x!==n}))}).catch(function(){})})}
+function bnConfirm(n){var q=bnLsGet('gb_bnq',[]);if(q.indexOf(n)<0)q.push(n);bnLsSet('gb_bnq',q.slice(-200));bnFlush()}
+/* keeps the spare numbers topped up, extends the hold on numbers this device uses, and hands back extras */
+function bnTop(force){
+  if(!bnOk()||bnBusy)return Promise.resolve();
+  var now=Date.now();if(!force&&now-bnLast<100000)return Promise.resolve();
+  bnBusy=true;bnLast=now;bnFlush();
+  var sp=bnSp().filter(function(n){if(bnUsed(n)){bnReq('bn_confirm',{no:n}).catch(function(){});return false}return true});
+  var extra=sp.splice(BN_SPARE),have=sp.concat(extra);if(bill&&!bill.id&&bill.no)have.push(bill.no);
+  return bnAcq(Math.max(0,BN_SPARE-sp.length),have).then(function(o){
+    var lost=o.r.lost||[];sp=sp.filter(function(n){return lost.indexOf(n)<0}).concat(o.nums);bnSpSet(sp);
+    if(extra.length)bnReq('bn_release',{nos:extra.filter(function(n){return lost.indexOf(n)<0})}).catch(function(){});
+    if(bill&&!bill.id&&bill.no&&lost.indexOf(bill.no)>-1){bill.no=null;bnTouch()}
+  }).catch(function(){}).then(function(){bnBusy=false})}
+/* called whenever the bill screen redraws: the first customer or line starts the bill and takes a number */
+function bnTouch(){
+  if(WK||!bill||bill.id||bill.no||!(bill.cust||bill.lines.length)||!bnOk())return;
+  var sp=bnSp();
+  if(sp.length){bill.no=sp.shift();bnSpSet(sp);bnSub();draft();bnTop(true);return}
+  if(bnClaiming)return;bnClaiming=true;
+  bnAcq(1,[]).then(function(o){var n=o.nums[0];if(!n)return;
+    if(!bill.no&&!bill.id&&(bill.cust||bill.lines.length)){bill.no=n;bnSub();draft()}else bnBack(n)
+  }).catch(function(){}).then(function(){bnClaiming=false})}
 function sySetup(){
   setTimeout(function(){scPut();scAutoJoin()},2500);
+  setTimeout(function(){bnTop(true)},5000);
+  if(db.sy&&db.sy.hold)setTimeout(function(){syRun().then(function(){if(db.sy&&db.sy.hold&&!db.sy.err){delete db.sy.hold;persist(true);syRun().then(function(){if(db.sy){db.sy.jn=null;persist(true)}})}})},3500);   /* a join that was interrupted finishes itself */setInterval(function(){if(!document.hidden)bnTop()},60000);
   setInterval(function(){if(!document.hidden)syRun()},10000);setInterval(syLight,5000);
   document.addEventListener('visibilitychange',function(){if(!document.hidden)setTimeout(syRun,800)});
-  window.addEventListener('online',function(){setTimeout(syRun,800)});window.addEventListener('focus',function(){setTimeout(syRun,600)});
+  window.addEventListener('online',function(){setTimeout(syRun,800);setTimeout(function(){bnTop(true)},1500)});window.addEventListener('focus',function(){setTimeout(syRun,600)});
   setTimeout(syRun,3000);
 }
 function backupJson(){return JSON.stringify({app:'granite-book',version:1,exported:new Date().toISOString(),data:{secrets:{sy:(db.sy&&db.sy.on&&db.sy.code)||'',bk:(db.bk&&db.bk.key)||''},cclose:db.cclose,rem:db.rem,settings:{view:db.view||'',pdf:db.pdf,expCats:db.expCats,sumOn:db.sumOn,idle:{bg:db.lock.bg,act:db.lock.act},lock:{own:db.lock.own,stf:db.lock.stf,salt:db.lock.salt}},exp:db.exp,vehicles:db.vehicles,trips:db.trips,staff:db.staff,workers:db.workers,att:db.att,req:db.req,wpay:db.wpay,returns:db.returns,suppliers:db.suppliers,purchases:db.purchases,spay:db.spay,sadj:db.sadj,nextCn:db.nextCn,units:db.units,items:db.items,estimates:db.estimates,bills:db.bills,nextNo:db.nextNo,customers:db.customers,contractors:db.contractors,advances:db.advances,profile:db.profile,theme:db.theme}},null,1)}
