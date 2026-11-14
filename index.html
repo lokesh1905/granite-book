@@ -51,6 +51,14 @@ body.menu .fab{display:none}
 #scrim{display:none}
 /* main */
 #main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
+#licBar{position:sticky;top:0;z-index:6;padding:8px 14px;font-size:13px;font-weight:600;background:#fff4d6;color:#7a5200;border-bottom:1px solid #f0d28a;cursor:pointer}
+#licBar.bad{background:#fde4e1;color:#9b1c10;border-color:#f3b4ac}
+#nav button.lk{opacity:.45}
+html.lic-ro .fab{display:none!important}
+.admr{padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer}.admr:last-child{border:0}
+.admr b{display:block}.admr small{display:block;color:var(--mut,#667);margin-top:2px}
+.admp{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:700;margin-left:6px;background:#e3f2e8;color:#14683a}
+.admp.g{background:#fff4d6;color:#7a5200}.admp.x{background:#fde4e1;color:#9b1c10}
 #top{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:var(--card);border-bottom:1px solid var(--line);flex:none}
 #burger{display:none;background:none;border:0;font-size:22px;padding:4px 8px;border-radius:8px}
 #ttl{font-weight:700;font-size:17px}
@@ -330,6 +338,7 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
       <button data-p="Stock"><span class="ic">📦</span>Stock<span class="cnt" id="cStk">0</span></button>
       <button data-p="Customers"><span class="ic">👥</span>Customers<span class="cnt" id="cCus">0</span></button>
       <button data-p="Contractors"><span class="ic">🤝</span>Contractors<span class="cnt" id="cCtr">0</span></button>
+      <button data-p="Admin" id="navAdm" hidden><span class="ic">🛡️</span>Admin</button>
       <button data-p="Items"><span class="ic">🪨</span>Items<span class="cnt" id="cGr">0</span></button>
       <button data-p="Vehicles"><span class="ic">🚛</span>Vehicles</button>
       <div class="nh">Money &amp; reports</div>
@@ -348,6 +357,7 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
   <div id="main">
     <div id="top"><button id="burger" aria-label="Menu">☰</button><button id="back" aria-label="Back">←</button><div id="ttl">Measure</div><div id="tsub"></div><button id="bell" aria-label="Notifications" title="Notifications" style="margin-left:0">🔔<span id="bellN" hidden>0</span></button><button id="rfBtn" aria-label="Refresh and sync" title="Refresh and sync" style="background:none;border:0;font-size:22px;line-height:1;padding:4px 6px;color:var(--ink,inherit)">↻</button><span id="syLt" title="Sync status" style="width:10px;height:10px;border-radius:50%;background:#9aa;margin:0 12px 0 4px;flex:none" hidden></span></div>
 
+    <div id="licBar" hidden></div>
     <section class="page on" id="pHome"><div class="wrap">
       <div class="stats"><div class="stl"><small>Bills</small><b id="stB">0</b></div><div class="stl"><small>Total sqft</small><b id="stS">0</b></div><div class="stl"><small>Billed</small><b id="stA">₹0</b></div><div class="stl"><small>Pending</small><b id="stD" style="color:var(--bad)">₹0</b></div></div>
       <div class="addrow"><input class="in" id="rsearch" placeholder="Search bills by customer, number or granite…"></div>
@@ -532,6 +542,11 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
       <div class="card" id="cusList"></div>
     </div></section>
 
+    <section class="page" id="pAdmin"><div class="wrap">
+      <div class="addrow"><button class="btn pri" id="admT1">Companies</button><button class="btn" id="admT2">Product keys</button><input class="in" id="admQ" placeholder="Search…"></div>
+      <div id="admSum" class="hint" style="margin:0 0 8px"></div>
+      <div class="card" id="admList"></div>
+    </div></section>
     <section class="page" id="pContractors"><div class="wrap">
       <div class="addrow"><input class="in" id="ctrSearch" placeholder="Search contractors…"><button class="btn pri" id="ctrAdd">＋ Add</button></div>
       <p class="hint" style="margin:0 0 8px">A contractor brings customers. Pick him in the C/O box while billing; his customers, sales, pending and profit are counted here.</p>
@@ -633,10 +648,16 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
         </details>
         <details class="card grp">
           <summary>💾 Backup</summary>
-          <div class="gb"><p class="hint" id="bkInfo"></p>
+          <div class="gb"><p class="hint" id="bkInfo"></p><p class="hint" id="bkDirP" style="margin-top:8px"></p>
             <button class="btn pri" id="bkGo" style="width:100%;padding:14px;font-size:16px">Back up now</button>
             <div id="bkProg" hidden style="margin-top:12px"><div class="pbar"><i id="bkPi"></i></div><p class="hint" id="bkPt" style="margin-top:6px"></p></div>
             <p class="hint" id="bkKeyP" style="margin-top:12px"></p></div>
+        </details>
+        <details class="card grp">
+          <summary>📤 Share app</summary>
+          <div class="gb"><p class="hint" id="shInfo"></p>
+            <button class="btn pri" id="shBtn" style="width:100%;padding:14px;font-size:16px">Share app</button>
+            <p class="hint" id="shMsg" style="margin-top:10px"></p></div>
         </details>
         <details class="card grp">
           <summary>🔄 App updates</summary>
@@ -2283,8 +2304,8 @@ var ROLE='o',WHO=null;try{ROLE=sessionStorage.getItem('gb_role')||'o';WHO=JSON.p
 var WK=!!CO&&ROLE==='w'&&!!WHO,ME={name:'Owner',wid:''};
 var KEY=WK?'gb_wk_'+CO:SFX?'gb_data'+SFX:'gb_data_v1',DKEY=WK?'gb_wkd_'+CO:SFX?'gb_draft'+SFX:'gb_draft_v1',MINROWS=5;
 var $=function(s){return document.querySelector(s)};
-var APP_VER='2.9.23';
-var APP_LOG=[['2.9.23','Several devices can bill at the same time: a bill number is reserved on the server when billing starts (an abandoned number is given back), so numbers never clash. Joining or logging in now MERGES: every bill and record from this device and from all other devices are kept together, nothing is replaced. Payments added to the same bill on two devices are both kept. Needs the updated Code.gs (bill-number actions) in Google Apps Script.'],['2.9.22','Login now opens the company’s real online data by itself: no Join / Replace / Merge questions. If this device held a different copy, it is kept as a safety copy on the device first.'],['2.9.21','Sync: a device no longer silently replaces the shop’s online sync code. If this device is syncing a different copy than the one saved online (the cause of one device showing different bills), it asks whether to join the online copy or keep this one as the main. Tap the small sync dot to see its status or error.'],['2.9.20','New “Tally-style PDF” button on a saved bill: one framed A4 tax invoice (GSTIN, billed to / shipped to, HSN, CGST/SGST, tax summary, amount in words, bank details, terms, signature). The existing Share PDF is unchanged.'],['2.9.19','Quick billing view: pick “⚡ Quick” on the bill, type an item (e.g. araldite), Enter, quantity, Enter, rate, Enter and it is added. Granite opens the sizes screen and comes back. Keyboard keys: F1 save, F2 granite, F3 item, F4 charge, F6 customer, F7 C/O, F8 discount, F9 received, Esc back, ? lists all keys. Works in Classic view too.'],['2.9.18','Forgot password: the owner can make a new password for any staff (Staff, open him, Edit, “Forgot password?”). Cutter screen has a new look with job cards, today summary and bottom tabs; he can switch back to Classic in his Profile. Vehicles removed from the owner menu. Camera and photo matching removed.'],['2.9.17','C/O contractors: pick or add a contractor on the bill (name or mobile). New Contractors page with customers brought, sales, pending and profit. Shown in Reports (and CSV), Summary and on the bill and invoice. Fixed the Receive payment button being covered in the bill view.'],['2.9.16','Faster sync: a change is sent about 1 second after you make it (was 4), and the app checks the server again when you come back to it.'],['2.9.15','Press and hold (phone) or right-click (computer) a bill, customer, item, stock row, due or menu item for quick actions. Arrange menu in Settings; Requests moved up. Fingerprint login now works for several users on one phone, including admin, and asks once after login.'],['2.9.14','Item photos now sync as their own records, so they are kept when you refresh or when another phone edits the item. Update every phone and the laptop to this version.'],['2.9.13','Activity log in Settings (owner): who added, changed or deleted bills, items, stock, staff, attendance and payments, with date and time. Synced between phones.'],['2.9.12','Scan with the camera button at the top: read an item QR label, or take or choose a photo of a stone to find the closest items (top 3 with match %). Every item has a QR label (Items list and Stock details); New search button on every result.'],['2.9.11','Enter key moves to the next field while billing, in the measure sheet and in forms, and saves on the last one (like Tally). Items and stock can have up to 4 photos and a shelf or rack number; search finds items by shelf'],['2.9.10','Staff pages: Profile, Attendance (month calendar, tap a day, dropdown and Save), Money and advances (clear dates) and Requests (filters, compact, show more). Sidebar grouped. Admin attendance uses the same inline dropdown. Several loading photos at once, kept on the cutter phone and sent to the admin. Notification manager: filters, mark read, delete, mute. New teal G icon. Nos on the bill sizes sheet. Laptop link replaces Server connection and Sync phones'],['2.9.9','Payment reminders: promise-to-pay date and amount, repeat until paid, snooze, assign a follow-up to a staff member, reminders sync across devices and stop by themselves when the customer pays'],['2.9.8','Cutter view and request preview always show the number of pieces, even when it is 1. Staff and cutters see all their requests (bill requests and each attendance day) with Waiting, Approved or Rejected; Show more in My requests, the admin Recent list and the notification bell'],['2.9.7','Merged build: delivery, photos, cash close and piece rate (2.9.6) together with the bug fixes of the regression pass: backups include staff requests, narrow-phone top bar fix'],['2.9.6','Part delivery with a challan per trip, Today strip (late deliveries, cheques, cash), photos on jobs and from the cutter, challan on WhatsApp, cheque reminders the day before, daily cash close, piece-rate pay, larger jobs reach the cutter, backups keep the sync code'],['2.9.5','Fixes from the billing-to-delivery review: editing a bill no longer loses cutter, vehicle and driver; counter sales skip the job list; Delivered asks about money due; challan number, vehicle, receiver and e-way bill number; cutter is told when sizes change; stock shows what is still in the yard'],['2.9.4','The web page and the app installed from the link now update themselves: a green banner appears when a new version is online, with a Refresh now button'],['2.9.3','Notification centre (bell) for everyone: tap an item to open the page. Tapping a phone notification opens the right page. Requests now show the full bill (customer, sizes, amounts, job). Dark theme fixes'],['2.9.2','Refresh button in the top bar. Live sync now turns on by itself for the owner, so the laptop sees phone data after login without any setup'],['2.9.1','The laptop address shared from the phone now points to the granite-book web page'],['2.9.0','Cutters get My profile: attendance marking (admin approves), days, money, advances, salary slip PDF. Fingerprint login on Android for everyone. New bill pulls the latest data first so bill numbers do not clash. Needs the new Code.gs for the cutter profile'],['2.8.0','Karigar is now Staff. Requests inbox: staff ask, you approve (delete or edit a saved bill, reopen a done job, attendance). Staff mark their own attendance for your approval. Attendance is a dropdown. My profile page for staff. Salary slip PDF. Done jobs are locked for the cutter. Staff rights now include Edit'],['2.7.0','Manage companies screen for the admin (rename, reset password, remove, add). Eye button to see passwords. Suggested user name and password for new staff. Update banner. Sync every 10 seconds with a status light. No PIN at app start. Staff rights now include Delete and Returns. Fixed: password lost when login switched off then on'],['2.6.0','Cloud login: on a laptop or a new phone just open the web address and log in, your data loads by itself. No codes to copy. Share the web address from Settings'],['2.5.0','One login screen for everybody (user name and password only), company switching after login, Users and rights for staff, switch off a login and keep the record'],['2.4.4','Connection code check no longer rejects shorter keys and says exactly what is wrong'],['2.4.3','Companies are sent to your online server as soon as the app opens, so a forgotten password can be reset from the sheet'],['2.4.2','Private link now points to the separate public web repo granite-web'],['2.4.1','Log out button at the bottom of the menu for everyone, staff and cutter logins can be saved and tested on the same phone, wage optional for a karigar, clearer message when the online script is old'],['2.4.0','Nos (number of pieces) for every size row: sqft = (length + plus) x (width + plus) x nos / 144. Shown on the measuring sheet, bill, sizes PDF, estimates and the cutter view'],['2.3.2','Copy buttons work in every browser, saving a bill with a typed but unadded customer now opens the add-customer form, Enter adds a new customer'],['2.3.1','A permanent private link: open it once on the laptop and it connects by itself, then bookmark it'],['2.3.0','Use the same app on a laptop: open index.html or the web address in any browser, paste the connection code from your phone, then company logins, live sync and backups work there too. Can be installed as a web app'],['2.2.0','Cash book and expenses, weekly and monthly summary, staff logins, combine estimates into one bill and customer on estimates, monthly customer statements, vehicle and driver log, idle lock, loader enters the vehicle number'],['2.1.0','Cutter and loader login on his own phone with only his assigned jobs and sizes, job notifications, thermal receipt, cheque tracking, all companies summary, remove company, new companies start without sample customers'],['2.0.0','Multiple companies: choose a company at start, log in with user name and password, switch company from Settings, logins kept online, backups in one folder with a sub folder per company'],['1.3.0','PDF options in Settings, sizes and payments as separate PDFs, plus not printed and default plus, WhatsApp and follow-up reminders per bill, settings saved in backup'],['1.2.0','Stock, purchases and suppliers with profit per bill; credit notes and returns; extra charges on bills; last rate per customer; one-tap overdue reminders; rate list PDF'],['1.1.0','Compact or classic list style; Jobs and delivery challan; Karigar wages; item photos and QR labels; live sync between phones'],['1.0.9','Compact Customers list; tap a customer to open the ledger; Advance now inside the ledger'],['1.0.8','Bill PDF shows item names only; choose to print sizes on a last page'],['1.0.7','Fixes from full testing: fast typing, bill in progress banner, zero rate and zero size checks, cleaner GST PDF'],['1.0.6','Security and bug fixes: encrypted phone backup, stronger PIN, safer restore and export, payment and advance fixes'],['1.0.5','Back button and navigation; one Backup button; proper bill PDF; auto update on open; bank and terms on bills'],['1.0.4','GST tax invoice (Tally style); reports with CSV export; PIN lock with owner and staff; WhatsApp to a number; advance without a bill'],['1.0.3','Payments and dues; customer ledger; share bills as PDF; make a bill from an estimate'],['1.0.2','Light theme by default; Kadappa half-foot sizing; scrambled automatic backup to Google Drive'],['1.0.1','Estimate page; item categories; length and width must both be filled'],['1.0.0','First release']];
+var APP_VER='2.9.25';
+var APP_LOG=[['2.9.25','Settings > Backup now shows the backup folder and lets you change it (phone: a folder inside Documents; computer: pick any folder, for example on another drive). Every 15 days the app reminds you if the folder is still the default. New: Settings > Share app sends the app file (phone) or the app link (browser) to a new shop.'],['2.9.24','Product mode: new companies sign up with company name, owner name and mobile and start as a 30-day guest (Estimates only). A 16-character product key unlocks everything. When a plan ends the company can still view and export. New Admin tab (only for the owner company set as ADMIN_CO in Code.gs): all companies, plans, keys, password reset and usage. Needs the updated Code.gs.'],['2.9.23','Several devices can bill at the same time: a bill number is reserved on the server when billing starts (an abandoned number is given back), so numbers never clash. Joining or logging in now MERGES: every bill and record from this device and from all other devices are kept together, nothing is replaced. Payments added to the same bill on two devices are both kept. Needs the updated Code.gs (bill-number actions) in Google Apps Script.'],['2.9.22','Login now opens the company’s real online data by itself: no Join / Replace / Merge questions. If this device held a different copy, it is kept as a safety copy on the device first.'],['2.9.21','Sync: a device no longer silently replaces the shop’s online sync code. If this device is syncing a different copy than the one saved online (the cause of one device showing different bills), it asks whether to join the online copy or keep this one as the main. Tap the small sync dot to see its status or error.'],['2.9.20','New “Tally-style PDF” button on a saved bill: one framed A4 tax invoice (GSTIN, billed to / shipped to, HSN, CGST/SGST, tax summary, amount in words, bank details, terms, signature). The existing Share PDF is unchanged.'],['2.9.19','Quick billing view: pick “⚡ Quick” on the bill, type an item (e.g. araldite), Enter, quantity, Enter, rate, Enter and it is added. Granite opens the sizes screen and comes back. Keyboard keys: F1 save, F2 granite, F3 item, F4 charge, F6 customer, F7 C/O, F8 discount, F9 received, Esc back, ? lists all keys. Works in Classic view too.'],['2.9.18','Forgot password: the owner can make a new password for any staff (Staff, open him, Edit, “Forgot password?”). Cutter screen has a new look with job cards, today summary and bottom tabs; he can switch back to Classic in his Profile. Vehicles removed from the owner menu. Camera and photo matching removed.'],['2.9.17','C/O contractors: pick or add a contractor on the bill (name or mobile). New Contractors page with customers brought, sales, pending and profit. Shown in Reports (and CSV), Summary and on the bill and invoice. Fixed the Receive payment button being covered in the bill view.'],['2.9.16','Faster sync: a change is sent about 1 second after you make it (was 4), and the app checks the server again when you come back to it.'],['2.9.15','Press and hold (phone) or right-click (computer) a bill, customer, item, stock row, due or menu item for quick actions. Arrange menu in Settings; Requests moved up. Fingerprint login now works for several users on one phone, including admin, and asks once after login.'],['2.9.14','Item photos now sync as their own records, so they are kept when you refresh or when another phone edits the item. Update every phone and the laptop to this version.'],['2.9.13','Activity log in Settings (owner): who added, changed or deleted bills, items, stock, staff, attendance and payments, with date and time. Synced between phones.'],['2.9.12','Scan with the camera button at the top: read an item QR label, or take or choose a photo of a stone to find the closest items (top 3 with match %). Every item has a QR label (Items list and Stock details); New search button on every result.'],['2.9.11','Enter key moves to the next field while billing, in the measure sheet and in forms, and saves on the last one (like Tally). Items and stock can have up to 4 photos and a shelf or rack number; search finds items by shelf'],['2.9.10','Staff pages: Profile, Attendance (month calendar, tap a day, dropdown and Save), Money and advances (clear dates) and Requests (filters, compact, show more). Sidebar grouped. Admin attendance uses the same inline dropdown. Several loading photos at once, kept on the cutter phone and sent to the admin. Notification manager: filters, mark read, delete, mute. New teal G icon. Nos on the bill sizes sheet. Laptop link replaces Server connection and Sync phones'],['2.9.9','Payment reminders: promise-to-pay date and amount, repeat until paid, snooze, assign a follow-up to a staff member, reminders sync across devices and stop by themselves when the customer pays'],['2.9.8','Cutter view and request preview always show the number of pieces, even when it is 1. Staff and cutters see all their requests (bill requests and each attendance day) with Waiting, Approved or Rejected; Show more in My requests, the admin Recent list and the notification bell'],['2.9.7','Merged build: delivery, photos, cash close and piece rate (2.9.6) together with the bug fixes of the regression pass: backups include staff requests, narrow-phone top bar fix'],['2.9.6','Part delivery with a challan per trip, Today strip (late deliveries, cheques, cash), photos on jobs and from the cutter, challan on WhatsApp, cheque reminders the day before, daily cash close, piece-rate pay, larger jobs reach the cutter, backups keep the sync code'],['2.9.5','Fixes from the billing-to-delivery review: editing a bill no longer loses cutter, vehicle and driver; counter sales skip the job list; Delivered asks about money due; challan number, vehicle, receiver and e-way bill number; cutter is told when sizes change; stock shows what is still in the yard'],['2.9.4','The web page and the app installed from the link now update themselves: a green banner appears when a new version is online, with a Refresh now button'],['2.9.3','Notification centre (bell) for everyone: tap an item to open the page. Tapping a phone notification opens the right page. Requests now show the full bill (customer, sizes, amounts, job). Dark theme fixes'],['2.9.2','Refresh button in the top bar. Live sync now turns on by itself for the owner, so the laptop sees phone data after login without any setup'],['2.9.1','The laptop address shared from the phone now points to the granite-book web page'],['2.9.0','Cutters get My profile: attendance marking (admin approves), days, money, advances, salary slip PDF. Fingerprint login on Android for everyone. New bill pulls the latest data first so bill numbers do not clash. Needs the new Code.gs for the cutter profile'],['2.8.0','Karigar is now Staff. Requests inbox: staff ask, you approve (delete or edit a saved bill, reopen a done job, attendance). Staff mark their own attendance for your approval. Attendance is a dropdown. My profile page for staff. Salary slip PDF. Done jobs are locked for the cutter. Staff rights now include Edit'],['2.7.0','Manage companies screen for the admin (rename, reset password, remove, add). Eye button to see passwords. Suggested user name and password for new staff. Update banner. Sync every 10 seconds with a status light. No PIN at app start. Staff rights now include Delete and Returns. Fixed: password lost when login switched off then on'],['2.6.0','Cloud login: on a laptop or a new phone just open the web address and log in, your data loads by itself. No codes to copy. Share the web address from Settings'],['2.5.0','One login screen for everybody (user name and password only), company switching after login, Users and rights for staff, switch off a login and keep the record'],['2.4.4','Connection code check no longer rejects shorter keys and says exactly what is wrong'],['2.4.3','Companies are sent to your online server as soon as the app opens, so a forgotten password can be reset from the sheet'],['2.4.2','Private link now points to the separate public web repo granite-web'],['2.4.1','Log out button at the bottom of the menu for everyone, staff and cutter logins can be saved and tested on the same phone, wage optional for a karigar, clearer message when the online script is old'],['2.4.0','Nos (number of pieces) for every size row: sqft = (length + plus) x (width + plus) x nos / 144. Shown on the measuring sheet, bill, sizes PDF, estimates and the cutter view'],['2.3.2','Copy buttons work in every browser, saving a bill with a typed but unadded customer now opens the add-customer form, Enter adds a new customer'],['2.3.1','A permanent private link: open it once on the laptop and it connects by itself, then bookmark it'],['2.3.0','Use the same app on a laptop: open index.html or the web address in any browser, paste the connection code from your phone, then company logins, live sync and backups work there too. Can be installed as a web app'],['2.2.0','Cash book and expenses, weekly and monthly summary, staff logins, combine estimates into one bill and customer on estimates, monthly customer statements, vehicle and driver log, idle lock, loader enters the vehicle number'],['2.1.0','Cutter and loader login on his own phone with only his assigned jobs and sizes, job notifications, thermal receipt, cheque tracking, all companies summary, remove company, new companies start without sample customers'],['2.0.0','Multiple companies: choose a company at start, log in with user name and password, switch company from Settings, logins kept online, backups in one folder with a sub folder per company'],['1.3.0','PDF options in Settings, sizes and payments as separate PDFs, plus not printed and default plus, WhatsApp and follow-up reminders per bill, settings saved in backup'],['1.2.0','Stock, purchases and suppliers with profit per bill; credit notes and returns; extra charges on bills; last rate per customer; one-tap overdue reminders; rate list PDF'],['1.1.0','Compact or classic list style; Jobs and delivery challan; Karigar wages; item photos and QR labels; live sync between phones'],['1.0.9','Compact Customers list; tap a customer to open the ledger; Advance now inside the ledger'],['1.0.8','Bill PDF shows item names only; choose to print sizes on a last page'],['1.0.7','Fixes from full testing: fast typing, bill in progress banner, zero rate and zero size checks, cleaner GST PDF'],['1.0.6','Security and bug fixes: encrypted phone backup, stronger PIN, safer restore and export, payment and advance fixes'],['1.0.5','Back button and navigation; one Backup button; proper bill PDF; auto update on open; bank and terms on bills'],['1.0.4','GST tax invoice (Tally style); reports with CSV export; PIN lock with owner and staff; WhatsApp to a number; advance without a bill'],['1.0.3','Payments and dues; customer ledger; share bills as PDF; make a bill from an estimate'],['1.0.2','Light theme by default; Kadappa half-foot sizing; scrambled automatic backup to Google Drive'],['1.0.1','Estimate page; item categories; length and width must both be filled'],['1.0.0','First release']];
 var db={aud:[],rem:[],exp:[],vehicles:[],trips:[],cclose:[],staff:[],expCats:[],sumOn:0,sumSeen:0,pdf:{sizes:0,pays:0,est:1},view:'',workers:[],att:[],wpay:[],req:[],returns:[],suppliers:[],purchases:[],spay:[],sadj:[],nextCn:1,granites:[],items:[],estimates:[],itemsSeeded:false,updAuto:true,updCheck:0,sheets:[],bills:[],nextNo:1,lastBackup:0,customers:[],contractors:[],seeded:false,profile:{name:'',address:'',mobile:'',email:'',gst:'',gstOn:'off',pre:'',defGst:'18',defPlus:'1',bank:'',bankN:'',bankA:'',bankI:'',bankB:'',upi:'',terms:''},theme:'light',advances:[],units:[],lock:{own:'',stf:'',salt:'',n:0,until:0}};
 var cur=blank();
 var bill=newBill();
@@ -2543,7 +2564,7 @@ $('#bClear').onclick=function(){
 };
 
 /* ---------- pages ---------- */
-var titles={Home:'Home',Bill:'New bill',Measure:'Add stone',Estimate:'Estimates',Dues:'Dues',Karigar:'Staff',Req:'Requests',Me:'My profile',Stock:'Stock',Jobs:'Jobs',Work:'My work',Cash:'Cash book',Vehicles:'Vehicles',Summary:'Summary',Reports:'Reports',Pick:'Add item',Qty:'Add item',Items:'Items',Customers:'Customers',Contractors:'Contractors',Settings:'Settings'};
+var titles={Home:'Home',Bill:'New bill',Measure:'Add stone',Estimate:'Estimates',Dues:'Dues',Karigar:'Staff',Req:'Requests',Me:'My profile',Stock:'Stock',Jobs:'Jobs',Work:'My work',Cash:'Cash book',Vehicles:'Vehicles',Summary:'Summary',Reports:'Reports',Pick:'Add item',Qty:'Add item',Items:'Items',Customers:'Customers',Contractors:'Contractors',Admin:'Admin',Settings:'Settings'};
 var STAFF_PG=['Cash','Dues','Reports','Summary','Vehicles','Stock','Karigar','Contractors'];
 var STAFF_AC=['Delete','Returns','Edit'];
 function staffRec(){return db.staff.filter(function(x){return x.id===ME.wid})[0]}
@@ -2553,6 +2574,7 @@ function applyRights(){STAFF_PG.concat(STAFF_AC).forEach(function(p){document.bo
 var navStack=[],SHEETS=['Measure','Pick','Qty'];
 function show(p,isBack){
   if(WK)p='Work';
+  if(!licCan(p)){licLocked(p);return}
   if(role==='staff'&&!staffCan(p))p='Home';
   if(p==='Home')navStack=[];
   else if(isBack){if(navStack[navStack.length-1]===p)navStack.pop()}
@@ -2564,7 +2586,7 @@ function show(p,isBack){
   document.body.classList.toggle('sheet',['Measure','Pick','Qty'].indexOf(p)>-1);
   document.body.classList.toggle('hasbar',p==='Bill'||p==='Measure'||p==='Qty');document.body.classList.toggle('setbar',p==='Settings');
   if(p==='Measure'){calc();$('#bSave').textContent=estMode?'Save estimate':'Add to bill'}else $('#tsub').textContent='';
-  if(p==='Home')renderHome();if(p==='Bill'){renderBill();if(qkOn())setTimeout(billFocus,60);if(db.sy&&db.sy.on&&Date.now()-(window._bpT||0)>4000){window._bpT=Date.now();syRun()}}if(p==='Items')renderItems();if(p==='Estimate')renderEst();if(p==='Dues')renderDues();if(p==='Jobs')renderJobs();if(p==='Karigar')renderKarigar();if(p==='Req')renderReq();if(p==='Me')renderMe();if(p==='Cash')renderCash();if(p==='Summary')renderSum();if(p==='Vehicles')renderVeh();if(p==='Stock')renderStock();if(p==='Reports')renderReports();if(p==='Pick')renderPick();if(p==='Customers')renderCustomers();if(p==='Contractors')renderContractors();if(p==='Settings')renderSettings();
+  if(p==='Home')renderHome();if(p==='Bill'){renderBill();if(qkOn())setTimeout(billFocus,60);if(db.sy&&db.sy.on&&Date.now()-(window._bpT||0)>4000){window._bpT=Date.now();syRun()}}if(p==='Items')renderItems();if(p==='Estimate')renderEst();if(p==='Dues')renderDues();if(p==='Jobs')renderJobs();if(p==='Karigar')renderKarigar();if(p==='Req')renderReq();if(p==='Me')renderMe();if(p==='Cash')renderCash();if(p==='Summary')renderSum();if(p==='Vehicles')renderVeh();if(p==='Stock')renderStock();if(p==='Reports')renderReports();if(p==='Pick')renderPick();if(p==='Customers')renderCustomers();if(p==='Contractors')renderContractors();if(p==='Admin')renderAdmin();if(p==='Settings')renderSettings();
 }
 /* every user-initiated move goes through go(): it asks about unsaved settings or an unsaved bill first */
 function go(p,isBack){
@@ -4899,7 +4921,7 @@ $('#pdW').addEventListener('change',function(){db.pdf.rw=this.value;persist();to
 function renderShop(){$('#shopN').textContent=db.profile.name||''}
 function renderSettings(){
   Object.keys(pf).forEach(function(id){$('#'+id).value=db.profile[pf[id]]||''});
-  thSel=db.theme;markTheme();renderUpd();renderBk();renderSy();renderLockInfo();renderPdfOpts();var sc=stCode(db.profile.gst);$('#sSt').textContent=sc?'State from GST number: '+(STATES[sc]||'?')+' (code '+sc+'). Bills to customers with a GST number from another state get IGST.':'Enter your GST number so the state can be worked out.';
+  thSel=db.theme;markTheme();renderUpd();renderShare();renderBk();renderSy();renderLockInfo();renderPdfOpts();var sc=stCode(db.profile.gst);$('#sSt').textContent=sc?'State from GST number: '+(STATES[sc]||'?')+' (code '+sc+'). Bills to customers with a GST number from another state get IGST.':'Enter your GST number so the state can be worked out.';
 }
 function sVals(){var o={};Object.keys(pf).forEach(function(id){o[pf[id]]=$('#'+id).value.trim()});o.gst=(o.gst||'').toUpperCase();o.bankI=(o.bankI||'').toUpperCase();o.defGst=o.defGst.replace(/[^0-9.]/g,'')||'18';o.defPlus=String(o.defPlus||'').replace(/[^0-9.]/g,'');if(o.defPlus==='')o.defPlus='1';return o}
 function sDirty(){
@@ -5184,6 +5206,41 @@ function doUpdate(r){
     var m=err&&err.message||String(err);if(m!=='Cancelled'){updMsg('Update failed: '+m);toast('Update failed: '+m)}
   });
 }
+function shMsg(t){var e=$('#shMsg');if(e)e.textContent=t||''}
+function renderShare(){var e=$('#shInfo');if(e)e.textContent=isNative()?'Sends the app file (APK) by WhatsApp or any app. The new person installs it, signs up with their shop details and gets 30 days free with Estimates. Your product key unlocks the rest.':'Shares the link to this app. The new person opens it, signs up with their shop details and gets 30 days free with Estimates. Your product key unlocks the rest.'}
+$('#shBtn').onclick=function(){shareApp()};
+function shareApp(){
+  var C=window.Capacitor,P=C&&C.Plugins;
+  if(!isNative()||!P||!P.Share||!P.Filesystem){
+    var t='Granite Book: billing app for granite and stone shops. Open this link and sign up: '+location.origin+location.pathname;
+    if(navigator.share)return navigator.share({title:'Granite Book',text:t}).catch(function(){});
+    return cpy(t,'Link copied','Select the link and copy it');
+  }
+  if(!window.GB_UPD){shMsg('This build has no update server, so the app file is not available.');return}
+  var fs=P.Filesystem,path='update/GraniteBook-share.apk',stop=false,chunks=[],r;
+  $('#mbox').innerHTML='<h4>Preparing the app file</h4><p id="shP">Starting…</p><div class="pbar"><i id="shPi"></i></div><div class="btns"><button class="btn" data-a="x">Cancel</button></div>';
+  $('#mod').classList.add('on');modCancel=function(){stop=true};$('#mbox').onclick=function(e){if(e.target.closest('[data-a]')){stop=true;modCancel=null;$('#mod').classList.remove('on')}};
+  function step(i){
+    if(stop)return Promise.reject(new Error('Cancelled'));
+    if(i>=r.parts)return Promise.resolve();
+    return gpost({action:'rel_get',idx:i,ver:r.latest}).then(function(c){
+      if(!c||!c.ok||typeof c.data!=='string')throw new Error(c&&c.err||'Download failed');
+      chunks.push(c.data);
+      var op=i===0?fs.writeFile({path:path,directory:'CACHE',data:c.data,recursive:true}):fs.appendFile({path:path,directory:'CACHE',data:c.data});
+      return op.then(function(){var pc=Math.round((i+1)/r.parts*100),a=$('#shP');if(a){a.textContent='Part '+(i+1)+' of '+r.parts+' ('+pc+'%)';$('#shPi').style.width=pc+'%'}return step(i+1)});
+    });
+  }
+  gpost({action:'rel_info'}).then(function(x){r=x;if(!r||!r.ok||!r.parts)throw new Error(r&&r.err||'No app file is uploaded yet');return fs.deleteFile({path:path,directory:'CACHE'}).catch(function(){})}).then(function(){return step(0)}).then(function(){
+    var bytes=b64bytes(chunks);if(r.size&&bytes.length!==r.size)throw new Error('The download is incomplete. Try again.');
+    return crypto.subtle.digest('SHA-256',bytes).then(function(h){if(r.sha256&&hexOf(h)!==String(r.sha256).toLowerCase())throw new Error('The download is damaged. Try again.')});
+  }).then(function(){chunks=[];return fs.getUri({path:path,directory:'CACHE'})}).then(function(u){
+    $('#mod').classList.remove('on');
+    return P.Share.share({title:'Granite Book app',text:'Install Granite Book, then sign up with your shop details.',url:u.uri,dialogTitle:'Share app'});
+  }).catch(function(err){
+    $('#mod').classList.remove('on');var m=err&&err.message||String(err);
+    if(m!=='Cancelled'&&!/cancel/i.test(m)){shMsg('Could not share: '+m);toast('Could not share the app')}
+  });
+}
 function eyeFix(root){(root||document).querySelectorAll('input[type=password]:not([data-eye])').forEach(function(i){
   if(i.id==='lkIn'||i.id==='pnA'||i.id==='pnB')return;i.dataset.eye=1;
   var w=document.createElement('span');w.style.cssText='position:relative;display:block;width:100%';i.parentNode.insertBefore(w,i);w.appendChild(i);i.style.paddingRight='44px';
@@ -5244,16 +5301,44 @@ function renderBk(){
   $('#bkInfo').innerHTML='One tap saves a copy on this phone and also sends a scrambled copy online in the background.<br>'+h.join(' &nbsp;·&nbsp; ');
   $('#bkKeyP').innerHTML=b&&b.key?'Recovery key: <b>'+bkShowKey(b.key)+'</b> <button class="lk" id="bkCopy">Copy</button><br>Keep it safe. It is the only way to open your online backup on a new phone.':'';
   var c=$('#bkCopy');if(c)c.onclick=function(){cpy(bkShowKey(b.key),'Key copied','Select the key and copy it')};
+  var dp=$('#bkDirP');if(dp){
+    dp.innerHTML=isNative()?'Backup folder: <b>Documents/'+esc(bkDir())+'</b> <button class="lk" id="bkDirB">Change</button>':(BKPICK?'Backup folder: <b>'+(bkHName?esc(bkHName):'Downloads folder (default, usually on C:)')+'</b> <button class="lk" id="bkDirB">'+(bkHName?'Change':'Choose')+'</button>':'Backups go to your browser\'s Downloads folder. To change it, set the download location in your browser settings.');
+    var dbn=$('#bkDirB');if(dbn)dbn.onclick=bkPickDir}
   if(bkBusy&&bkPct>0){$('#bkProg').hidden=false;$('#bkPi').style.width=bkPct+'%';$('#bkPt').textContent=bkTxt}
 }
-var BKDIR='GraniteBook'+(SFX?'/'+CO:''),BKFILE='GraniteBook-backup.json';
+var BKFILE='GraniteBook-backup.json',bkHName='',BKPICK=!!window.showDirectoryPicker;
+function bkDefDir(){return 'GraniteBook'+(SFX?'/'+CO:'')}
+function bkDir(){var d='';try{d=localStorage.getItem('gb_bkdir'+SFX)||''}catch(e){}return d||bkDefDir()}
+function bkIdb(){return new Promise(function(ok,no){var q=indexedDB.open('gb_bkh',1);q.onupgradeneeded=function(){q.result.createObjectStore('h')};q.onsuccess=function(){ok(q.result)};q.onerror=function(){no(q.error)}})}
+function bkHGet(){return bkIdb().then(function(d){return new Promise(function(ok){var r=d.transaction('h').objectStore('h').get(CO||'main');r.onsuccess=function(){ok(r.result||null)};r.onerror=function(){ok(null)}})}).catch(function(){return null})}
+function bkHSet(h){return bkIdb().then(function(d){return new Promise(function(ok,no){var t=d.transaction('h','readwrite');t.objectStore('h').put(h,CO||'main');t.oncomplete=ok;t.onerror=function(){no(t.error)}})})}
+if(!isNative()&&BKPICK)bkHGet().then(function(h){bkHName=h?h.name:'';renderBk()});
+function bkNagStamp(){try{localStorage.setItem('gb_bknag'+SFX,String(Date.now()))}catch(e){}}
+function bkPickDir(){
+  if(!isNative()){window.showDirectoryPicker({mode:'readwrite',id:'gbbackup'}).then(function(h){return bkHSet(h).then(function(){bkHName=h.name;bkNagStamp();renderBk();toast('Backup folder: '+h.name)})}).catch(function(){});return}
+  $('#mbox').innerHTML='<h4>Backup folder</h4><p>Backups are saved inside your phone\'s <b>Documents</b> folder. Type the folder name you want, for example <b>GraniteBook/Shop</b>. Old backups stay where they are.</p><input class="in" id="bkDirIn" autocomplete="off" style="margin:10px 0" value="'+esc(bkDir())+'"><div class="btns"><button class="btn" data-a="x">Cancel</button><button class="btn pri" data-a="s">Save</button></div>';
+  $('#mod').classList.add('on');modCancel=null;
+  $('#mbox').onclick=function(e){var b=e.target.closest('[data-a]');if(!b)return;
+    if(b.dataset.a==='s'){var v=$('#bkDirIn').value.replace(/\\/g,'/').replace(/[^A-Za-z0-9 _\-\/.]/g,'').replace(/\.\.+/g,'').replace(/\/{2,}/g,'/').replace(/^\/+|\/+$/g,'').slice(0,60);
+      try{if(!v||v===bkDefDir())localStorage.removeItem('gb_bkdir'+SFX);else localStorage.setItem('gb_bkdir'+SFX,v)}catch(x){}
+      bkNagStamp();toast('Backup folder saved');renderBk()}
+    closeMod()};
+}
+function bkNag(){
+  if(lockOn())return;var last=0;try{last=+localStorage.getItem('gb_bknag'+SFX)||0}catch(e){}
+  var custom=isNative()?!!localStorage.getItem('gb_bkdir'+SFX):!!bkHName;
+  if(custom||(!isNative()&&!BKPICK))return;
+  if(!last){bkNagStamp();return}
+  if(Date.now()-last<15*864e5)return;
+  ask('Backup folder','Your backups still go to the default place. Pick a safer folder (for example on another drive) so they survive if this device fails. Your data is also synced online meanwhile.',[{t:'Later'},{t:'Change folder',cls:'pri',v:1}]).then(function(v){bkNagStamp();if(v){show('Settings');bkPickDir()}});
+}
 function fsPlug(){var C=window.Capacitor,P=C&&C.Plugins;return isNative()&&P&&P.Filesystem?P.Filesystem:null}
 function phoneSave(json){
   var k=bkEnsure().key;
   return bkEnc(k,json).then(function(c){return phoneWrite(JSON.stringify({app:'granite-book',enc:1,at:Date.now(),bills:db.bills.length,data:c}))});
 }
 function phoneWrite(json){
-  var fs=fsPlug(),path=BKDIR+'/'+BKFILE;
+  var fs=fsPlug(),path=bkDir()+'/'+BKFILE;
   if(fs){
     var w=function(){return fs.writeFile({path:path,data:json,directory:'DOCUMENTS',encoding:'utf8',recursive:true})};
     return w().catch(function(){return fs.requestPermissions().then(w)}).then(function(){return 'saved'}).catch(function(){
@@ -5262,6 +5347,16 @@ function phoneWrite(json){
       return fs.writeFile({path:BKFILE,data:json,directory:'CACHE',encoding:'utf8'}).then(function(r){return P.Share.share({title:'Granite Book backup',url:r.uri,dialogTitle:'Save backup'})}).then(function(){return 'shared'});
     });
   }
+  if(BKPICK){return bkHGet().then(function(h){
+    if(!h)return null;
+    var q=h.queryPermission?h.queryPermission({mode:'readwrite'}):Promise.resolve('granted');
+    return q.then(function(st){return st==='granted'?st:h.requestPermission({mode:'readwrite'})}).then(function(st){
+      if(st!=='granted')return null;
+      return h.getFileHandle(BKFILE,{create:true}).then(function(f){return f.createWritable()}).then(function(w){return w.write(json).then(function(){return w.close()})}).then(function(){return 'saved'})});
+  }).catch(function(){return null}).then(function(r){return r||bkDownload(json)})}
+  return bkDownload(json);
+}
+function bkDownload(json){
   var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));a.download=BKFILE;
   document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);return Promise.resolve('saved');
 }
@@ -5281,7 +5376,7 @@ function initBackup(){
 /* fresh install: look for a backup on the phone or online and offer it */
 function phoneRead(){
   var fs=fsPlug();if(!fs)return Promise.resolve(null);
-  var r=function(){return fs.readFile({path:BKDIR+'/'+BKFILE,directory:'DOCUMENTS',encoding:'utf8'})};
+  var rd=function(d){return fs.readFile({path:d+'/'+BKFILE,directory:'DOCUMENTS',encoding:'utf8'})},r=function(){return rd(bkDir()).catch(function(e){if(bkDir()===bkDefDir())throw e;return rd(bkDefDir())})};
   return r().catch(function(){return fs.requestPermissions().then(r)}).then(function(x){var t=typeof x.data==='string'?x.data:'',o=JSON.parse(t);
     return{raw:t,o:o,enc:!!o.enc,at:+o.at||Date.parse(o.exported)||0,bills:+o.bills||(o.data&&o.data.bills&&o.data.bills.length)||0}}).catch(function(){return null});
 }
@@ -5470,8 +5565,8 @@ var scAsked=false;
 /* before this device switches to the online copy, keep what it had so nothing is lost */
 function scSafe(){try{localStorage.setItem('gb_prejoin',JSON.stringify({at:Date.now(),co:CO,json:backupJson()}))}catch(e){}}
 function scPut(){
-  if(ROLE!=='o'||!window.GB_UPD||!db.sy||!db.sy.on||!db.sy.code||db.sy.sc===db.sy.code)return;var a=scAuth();if(!a)return;
-  function put(){return gpost({action:'sc_put',co:CO,h:a.h,code:db.sy.code}).then(function(r){if(r&&r.ok){db.sy.sc=db.sy.code;persist(true)}})}
+  if(ROLE!=='o'||!window.GB_UPD||!db.sy||!db.sy.on||!db.sy.code||(db.sy.sc===db.sy.code&&db.sy.scv===2))return;var a=scAuth();if(!a)return;
+  function put(){return bkKeys(db.sy.code).then(function(k){return gpost({action:'sc_put',co:CO,h:a.h,code:db.sy.code,uid:k.uid})}).then(function(r){if(r&&r.ok){db.sy.sc=db.sy.code;db.sy.scv=2;persist(true)}})}
   /* never silently replace the code saved online: a different one means another device already keeps the real shop data */
   gpost({action:'sc_get',co:CO,h:a.h,r:a.r}).then(function(r){
     if(!(r&&r.ok&&r.code&&r.code!==db.sy.code))return put();
@@ -5487,6 +5582,115 @@ function scAutoJoin(){
     if(fresh){toast('Loading your company data…');syJoin(r.code,true).then(function(m){if(m)toast(m)})}
     else{scSafe();toast('Loading your company data…');syJoin(r.code,true).then(function(m){if(m)toast(m)})}
   }).catch(function(){})}
+/* ---------- plans: guest trial, product key, locked pages (checked again on the server) ---------- */
+var LIC=null,licT=0;
+var LIC_GUEST=['Home','Estimate','Measure','Pick','Qty','Customers','Items','Settings'];
+var LIC_RO=['Home','Estimate','Measure','Customers','Dues','Cash','Summary','Reports','Settings'];
+function licLoad(){try{LIC=JSON.parse(localStorage.getItem('gb_lic_'+CO)||'null')}catch(e){LIC=null}}
+function licOn(){return !!(window.GB_UPD&&LIC&&LIC.state&&!WK)}
+function licSt(){
+  if(!licOn())return 'ok';
+  if((LIC.state==='guest'||(LIC.plan==='full'&&LIC.until))&&LIC.until&&Date.now()>LIC.until&&LIC.state!=='blocked')return 'expired';
+  return LIC.state}
+function licCan(p){var s=licSt();if(s==='ok')return true;if(p==='Admin')return !!(LIC&&LIC.admin);return (s==='guest'?LIC_GUEST:LIC_RO).indexOf(p)>-1}
+function licH(){if(ROLE==='o'){var c=coFind(CO);return c&&c.h||''}return WHO&&WHO.h||''}
+function licDays(){return LIC&&LIC.until?Math.max(0,Math.ceil((LIC.until-Date.now())/864e5)):0}
+function licBarRender(){
+  var b=$('#licBar');if(!b)return;var s=licSt(),t='',bad=false;
+  if(s==='guest')t='Guest plan · '+licDays()+' day'+(licDays()===1?'':'s')+' left · Estimates only'+(ROLE==='o'?' · Tap to enter a product key':'');
+  else if(s==='expired'){t='Plan ended · you can view and export your data'+(ROLE==='o'?' · Tap to enter a product key':'');bad=true}
+  else if(s==='blocked'){t='This company is switched off. Please contact support.';bad=true}
+  else if(s==='ok'&&LIC&&LIC.plan==='full'&&LIC.until&&licDays()<=7){t='Your plan ends in '+licDays()+' day'+(licDays()===1?'':'s')+(ROLE==='o'?' · Tap to enter a new product key':'')}
+  b.hidden=!t;b.textContent=t;b.classList.toggle('bad',bad)}
+function licApply(){
+  var s=licSt();licBarRender();
+  document.documentElement.classList.toggle('lic-ro',s==='expired'||s==='blocked');
+  var a=$('#navAdm');if(a)a.hidden=!(LIC&&LIC.admin);
+  document.querySelectorAll('#nav button[data-p]').forEach(function(x){x.classList.toggle('lk',!licCan(x.dataset.p))});
+  if(typeof curPage!=='undefined'&&curPage&&!licCan(curPage))show('Home')}
+function licFetch(){
+  if(!window.GB_UPD||WK||!CO)return Promise.resolve();var h=licH();if(!h)return Promise.resolve();
+  var st=null;if(ROLE==='o'){var last=0;db.bills.forEach(function(b){if((b.created||0)>last)last=b.created});st={bills:db.bills.length,est:(db.estimates||[]).length,cust:db.customers.length,last:last,ver:APP_VER}}
+  return gpost({action:'lic_get',co:CO,h:h,st:st}).then(function(r){
+    if(r&&r.ok&&r.lic){LIC=r.lic;LIC.admin=!!r.admin;LIC.at=Date.now();try{localStorage.setItem('gb_lic_'+CO,JSON.stringify(LIC))}catch(e){}licApply()}}).catch(function(){})}
+function licLocked(p){
+  var s=licSt(),own=ROLE==='o';
+  $('#mbox').innerHTML='<h4>🔒 Locked</h4><p>'+(s==='guest'?'The guest plan has Estimates only. Enter a product key to unlock everything.':s==='blocked'?'This company is switched off. Please contact support.':'Your plan has ended. You can still view and export your data. Enter a product key to continue.')+(own||s==='blocked'?'':'<br>Please ask the owner.')+'</p><div class="btns">'+(own&&s!=='blocked'?'<button class="btn pri" data-a="k">Enter product key</button>':'')+'<button class="btn" data-a="x">Close</button></div>';
+  $('#mod').classList.add('on');modCancel=null;
+  $('#mbox').onclick=function(e){var a=e.target.closest('[data-a]');if(!a)return;if(a.dataset.a==='k')licKeyForm();else closeMod()}}
+function licKeyForm(){
+  if(ROLE!=='o')return;
+  $('#mbox').innerHTML='<h4>Product key</h4><div class="fld"><label>Type the key you received</label><input class="in" id="lkK" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off" autocapitalize="characters" style="letter-spacing:1px;text-transform:uppercase"></div><p class="hint" id="lkE" style="color:var(--bad);min-height:18px"></p><div class="btns"><button class="btn pri" data-a="a">Unlock</button><button class="btn" data-a="x">Close</button></div>';
+  $('#mod').classList.add('on');modCancel=null;
+  var inp=$('#lkK');inp.oninput=function(){var v=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16);inp.value=v.replace(/(.{4})(?=.)/g,'$1-')};setTimeout(function(){inp.focus()},50);
+  inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();$('#mbox [data-a=a]').click()}};
+  $('#mbox').onclick=function(e){var a=e.target.closest('[data-a]');if(!a)return;if(a.dataset.a==='x'){closeMod();return}
+    var E=$('#lkE');if(inp.value.replace(/-/g,'').length!==16){E.textContent='The key has 16 letters and numbers';return}
+    a.disabled=true;E.textContent='Checking…';
+    gpost({action:'key_use',co:CO,h:licH(),k:inp.value}).then(function(r){
+      a.disabled=false;
+      if(r&&r.ok){LIC=r.lic;LIC.at=Date.now();try{localStorage.setItem('gb_lic_'+CO,JSON.stringify(LIC))}catch(x){}licApply();closeMod();toast('Unlocked. Thank you!');return}
+      var m={'bad key':'That key is not valid','key used':'This key has already been used','locked':'Too many wrong tries. Try again in 15 minutes','already full':'This company already has full access','wrong':'Please log in again and retry'};
+      E.textContent=(r&&m[r.err])||'Could not check the key. Check your internet and try again'}).catch(function(){a.disabled=false;E.textContent='Could not reach the server. Check your internet'})}}
+$('#licBar').onclick=function(){var s=licSt();if(ROLE==='o'&&s!=='blocked')licKeyForm()};
+/* when the plan has ended every save-type button is stopped here; the server also refuses to take changes */
+document.addEventListener('click',function(e){
+  var s=licSt();if(s!=='expired'&&s!=='blocked')return;
+  var t=e.target.closest&&e.target.closest('.fab,#gbSave,#bSave,#qAdd,#mbox [data-a=s],#mbox [data-a=p],#mbox [data-a=dp]');
+  if(!t)return;e.preventDefault();e.stopPropagation();toast('Your plan has ended. You can view and export only.')},true);
+/* ---------- admin tab: every company, plans, product keys, password reset (only for the company set as ADMIN_CO in Code.gs) ---------- */
+var admTab='c',admCos=[],admKeys=[],admNew=[];
+function admCall(a,x){return gpost(Object.assign({action:a,co:CO,h:licH()},x||{}))}
+function admWhen(t){return t?dday(t):'—'}
+function admPlan(c){
+  if(c.status==='blocked')return '<span class="admp x">Blocked</span>';
+  if(c.legacy)return '<span class="admp">Full · own</span>';
+  if(c.state==='guest')return '<span class="admp g">Guest · '+c.days+'d left</span>';
+  if(c.state==='expired')return '<span class="admp x">Ended</span>';
+  return '<span class="admp">Full'+(c.until?' · '+c.days+'d':' · lifetime')+'</span>'}
+function renderAdmin(){
+  if(!(LIC&&LIC.admin)){$('#admList').innerHTML='<p class="hint">Admin is not switched on for this company.</p>';return}
+  $('#admT1').className='btn'+(admTab==='c'?' pri':'');$('#admT2').className='btn'+(admTab==='k'?' pri':'');
+  $('#admList').innerHTML='<p class="hint">Loading…</p>';
+  (admTab==='c'?admCall('adm_list'):admCall('adm_keys')).then(function(r){
+    if(!r||!r.ok){$('#admList').innerHTML='<p class="hint" style="color:var(--bad)">Could not load ('+esc(r&&r.err||'no internet')+')</p>';return}
+    if(admTab==='c'){admCos=r.cos||[];admDraw()}else{admKeys=r.keys||[];admKeyDraw()}}).catch(function(){$('#admList').innerHTML='<p class="hint" style="color:var(--bad)">Could not reach the server</p>'})}
+function admDraw(){
+  var q=($('#admQ').value||'').toLowerCase().trim(),now=Date.now(),w7=now-7*864e5,m30=now-30*864e5;
+  var n=admCos.length,g=0,f=0,x=0,act=0,nw=0;admCos.forEach(function(c){if(c.status==='blocked'||c.state==='expired')x++;else if(c.state==='guest')g++;else f++;if(c.seen>w7)act++;if(c.start>m30)nw++});
+  $('#admSum').textContent=n+' companies · '+g+' guest · '+f+' full · '+x+' ended or blocked · '+act+' active this week · '+nw+' new in 30 days';
+  var l=admCos.filter(function(c){return !q||(c.name+' '+c.owner+' '+c.mobile+' '+c.user+' '+c.id+' '+c.key).toLowerCase().indexOf(q)>-1}).sort(function(a,b){return (b.start||0)-(a.start||0)});
+  $('#admList').innerHTML=l.length?l.map(function(c){var u=c.usage||{};return '<div class="admr" data-i="'+esc(c.id)+'"><b>'+esc(c.name)+admPlan(c)+'</b><small>'+esc(c.owner||'—')+' · '+esc(c.mobile||'—')+' · login: '+esc(c.user)+'</small><small>Last seen '+admWhen(c.seen)+' · bills '+(u.bills==null?'—':u.bills)+' · estimates '+(u.est==null?'—':u.est)+(u.last?' · last bill '+admWhen(u.last):'')+(c.key?' · key '+esc(c.key):'')+'</small></div>'}).join(''):'<p class="hint">No companies found.</p>'}
+function admDetail(id){
+  var c=admCos.filter(function(x){return x.id===id})[0];if(!c)return;
+  $('#mbox').innerHTML='<h4>'+esc(c.name)+'</h4><p class="hint">'+esc(c.owner||'—')+' · '+esc(c.mobile||'—')+'<br>Login user: <b>'+esc(c.user)+'</b> · Company id: '+esc(c.id)+'<br>Plan: '+admPlan(c)+(c.until?' · until '+admWhen(c.until):'')+'<br>Signed up '+admWhen(c.start)+(c.key?' · key '+esc(c.key):'')+(c.note?'<br>Note: '+esc(c.note):'')+'</p>'+
+   '<div class="fld"><label>Days (for extend / full / guest)</label><input class="in" id="adD" inputmode="numeric" placeholder="e.g. 30  ·  empty = lifetime for Full"></div>'+
+   '<div class="btns" style="flex-wrap:wrap"><button class="btn" data-a="e">Extend days</button><button class="btn" data-a="f">Make Full</button><button class="btn" data-a="g">Back to Guest</button><button class="btn" data-a="'+(c.status==='blocked'?'u':'b')+'">'+(c.status==='blocked'?'Unblock':'Block')+'</button><button class="btn" data-a="r">Reset password</button><button class="btn" data-a="x">Close</button></div><p class="hint" id="adE" style="min-height:18px"></p>';
+  $('#mod').classList.add('on');modCancel=null;
+  $('#mbox').onclick=function(e){var a=e.target.closest('[data-a]');if(!a)return;var k=a.dataset.a,E=$('#adE'),d=Math.floor(+($('#adD').value||0))||0;
+    if(k==='x'){closeMod();return}
+    if(k==='r'){
+      $('#mbox').innerHTML='<h4>Reset password</h4><p class="hint">'+esc(c.name)+' · login user <b>'+esc(c.user)+'</b></p><div class="fld"><label>New password</label><input class="in" id="adP" value="'+esc(genPw())+'"></div><p class="hint" id="adE" style="min-height:18px"></p><div class="btns"><button class="btn pri" data-a="ok">Set password</button><button class="btn" data-a="x">Close</button></div>';
+      $('#mbox').onclick=function(e2){var b=e2.target.closest('[data-a]');if(!b)return;if(b.dataset.a==='x'){closeMod();return}
+        var pw=$('#adP').value.trim();admCall('adm_reset',{id:c.id,pass:pw}).then(function(r){if(r&&r.ok){$('#adE').style.color='var(--ok,green)';$('#adE').textContent='Done. Tell him: user '+r.user+' · password '+pw}else $('#adE').textContent='Failed: '+(r&&r.err||'no internet')})};return}
+    if(k==='e'&&!d){E.textContent='Type how many days';return}
+    var op={e:'extend',f:'full',g:'guest',b:'block',u:'unblock'}[k];
+    admCall('adm_set',{id:c.id,op:op,days:d}).then(function(r){if(r&&r.ok){closeMod();toast('Saved');renderAdmin()}else E.textContent='Failed: '+(r&&r.err||'no internet')})}}
+function admKeyDraw(){
+  var q=($('#admQ').value||'').toLowerCase().trim();
+  var f='<div class="card" style="margin-bottom:10px"><b>Make product keys</b><div class="addrow" style="margin-top:8px"><select class="in" id="akD"><option value="30">30 days</option><option value="90">90 days</option><option value="180">180 days</option><option value="365" selected>1 year</option><option value="0">Lifetime</option></select><input class="in" id="akN" inputmode="numeric" value="1" style="max-width:70px" title="How many keys"></div><div class="addrow"><input class="in" id="akT" placeholder="For whom (note)"><button class="btn pri" id="akM">Make</button></div>'+
+   (admNew.length?'<div style="margin-top:8px">'+admNew.map(function(k){return '<div class="admr" data-copy="'+k+'"><b style="letter-spacing:1px">'+k+'</b><small>Tap to copy</small></div>'}).join('')+'</div>':'')+'</div>';
+  var l=admKeys.filter(function(k){return !q||(k.key+' '+k.note+' '+k.by).toLowerCase().indexOf(q)>-1});
+  $('#admList').innerHTML=f+(l.length?l.map(function(k){return '<div class="admr" data-key="'+k.key+'"><b style="letter-spacing:1px">'+k.key+'<span class="admp'+(k.st==='new'?' g':k.st==='void'?' x':'')+'">'+(k.st==='new'?'Not used':k.st==='void'?'Void':'Used')+'</span></b><small>'+(k.days?k.days+' days':'Lifetime')+' · made '+admWhen(k.created)+(k.note?' · '+esc(k.note):'')+(k.by?' · used by '+esc(k.by)+' on '+admWhen(k.at):'')+'</small></div>'}).join(''):'<p class="hint">No keys yet.</p>');
+  $('#akM').onclick=function(){var d=+$('#akD').value,n=Math.max(1,Math.min(20,Math.floor(+$('#akN').value||1)));
+    admCall('adm_keynew',{days:d,n:n,note:$('#akT').value.trim()}).then(function(r){if(r&&r.ok){admNew=r.keys;renderAdmin()}else toast('Failed: '+(r&&r.err||'no internet'))})}}
+$('#admT1').onclick=function(){admTab='c';renderAdmin()};$('#admT2').onclick=function(){admTab='k';admNew=[];renderAdmin()};
+$('#admQ').oninput=function(){admTab==='c'?admDraw():admKeyDraw()};
+$('#admList').onclick=function(e){
+  var c=e.target.closest('[data-i]');if(c){admDetail(c.dataset.i);return}
+  var cp=e.target.closest('[data-copy]');if(cp){try{navigator.clipboard.writeText(cp.dataset.copy);toast('Copied')}catch(x){toast(cp.dataset.copy)}return}
+  var k=e.target.closest('[data-key]');if(k){var it=admKeys.filter(function(x){return x.key===k.dataset.key})[0];
+    if(it&&it.st==='new')ask('Key '+it.key,'This key is not used yet.',[{t:'Close'},{t:'Copy',v:'c'},{t:'Void it',cls:'pri',v:'v'}]).then(function(v){if(v==='c'){try{navigator.clipboard.writeText(it.key);toast('Copied')}catch(x){}}else if(v==='v')admCall('adm_keyvoid',{k:it.key}).then(function(){renderAdmin()})})}};
 /* ---------- shared bill numbers: a number is reserved on the server when billing starts, so two devices never get the same one ---------- */
 var BN_SPARE=0,bnBusy=false,bnLast=0,bnClaiming=false,bnSaved={};
 function bnDev(){var d='';try{d=localStorage.getItem('gb_dev')||'';if(!d){d='d'+uid()+Date.now().toString(36);localStorage.setItem('gb_dev',d)}}catch(e){}return d||'d0'}
@@ -5534,6 +5738,7 @@ function bnTouch(){
     if(!bill.no&&!bill.id&&(bill.cust||bill.lines.length)){bill.no=n;bnSub();draft()}else bnBack(n)
   }).catch(function(){}).then(function(){bnClaiming=false})}
 function sySetup(){
+  licLoad();licApply();setTimeout(licFetch,1200);setInterval(function(){if(!document.hidden&&Date.now()-licT>6*36e5){licT=Date.now();licFetch()}},60000);licT=Date.now();
   setTimeout(function(){scPut();scAutoJoin()},2500);
   setTimeout(function(){bnTop(true)},5000);
   if(db.sy&&db.sy.hold)setTimeout(function(){syRun().then(function(){if(db.sy&&db.sy.hold&&!db.sy.err){delete db.sy.hold;persist(true);syRun().then(function(){if(db.sy){db.sy.jn=null;persist(true)}})}})},3500);   /* a join that was interrupted finishes itself */setInterval(function(){if(!document.hidden)bnTop()},60000);
@@ -6224,7 +6429,7 @@ function coMigrate(){
 function coOpen(id,role,who){try{sessionStorage.setItem('gb_open',id);sessionStorage.setItem('gb_role',role||'o');if(who)sessionStorage.setItem('gb_who',JSON.stringify(who));else sessionStorage.removeItem('gb_who');localStorage.setItem('gb_lastco',id)}catch(e){}location.reload()}
 function coOut(){try{persist(true)}catch(e){}try{sessionStorage.removeItem('gb_open');sessionStorage.removeItem('gb_role');sessionStorage.removeItem('gb_who');sessionStorage.removeItem('gb_acc')}catch(e){}location.reload()}
 function coPushPending(){coRead().filter(function(c){return c.sync===0&&c.h}).forEach(function(c){
-  gpost({action:'co_put',co:{id:c.id,name:c.name,user:c.user,h:c.h}}).then(function(r){if(r&&(r.ok||r.err==='exists'))coSave({id:c.id,sync:1})}).catch(function(){})})}
+  gpost({action:'co_put',co:{id:c.id,name:c.name,user:c.user,h:c.h},o:c.o||null}).then(function(r){if(r&&(r.ok||r.err==='exists'))coSave({id:c.id,sync:1})}).catch(function(){})})}
 /* ---------- fingerprint login (Android app only) ---------- */
 function bioPlug(){var P=window.Capacitor&&window.Capacitor.Plugins;return isNative()&&P&&P.BiometricAuthNative||null}
 function bioCur(){if(ROLE==='o'){var c=coFind(CO);return c&&c.h?{id:CO,r:'o',user:c.user,h:c.h,name:c.name}:null}
@@ -6319,7 +6524,7 @@ function coNewInside(){
         var acc=swAcc();acc.push({id:id,name:nm,r:'o',user:me.user,h:h});try{sessionStorage.setItem('gb_acc',JSON.stringify(acc))}catch(x){}
         var fin=function(){coOpen(id,'o')};
         if(!window.GB_UPD)return fin();
-        gpost({action:'co_put',co:{id:id,name:nm,user:me.user,h:h}}).then(function(r){if(r&&r.ok)coSave({id:id,sync:1})}).catch(function(){}).then(fin)})
+        gpost({action:'co_put',co:{id:id,name:nm,user:me.user,h:h},pc:CO,ph:me.h}).then(function(r){if(r&&r.ok)coSave({id:id,sync:1})}).catch(function(){}).then(fin)})
     })};
 }
 $('#sideSw').onclick=function(){coSwitchShow()};
@@ -6374,16 +6579,24 @@ function coCheck(id,u,p){
   });
 }
 function coNewForm(){
-  $('#co').innerHTML='<div class="cob"><div class="logo">▦</div><h3>New company</h3><p class="sub">Its data is kept completely separate</p><input id="coN" placeholder="Company name" autocomplete="off"><div class="err" id="coErr"></div><button class="btn pri" id="coMk" style="width:100%">Create</button><button class="btn" id="coBack" style="width:100%;margin-top:10px">Back</button><p class="hint">The login is set automatically: user name is the first word of the name, password 1234. You can change both in Settings.</p></div>';
+  $('#co').innerHTML='<div class="cob"><div class="logo">▦</div><h3>Create your company</h3><p class="sub">Free for 30 days (estimates). Its data is kept completely separate.</p><input id="coN" placeholder="Company name" autocomplete="off"><input id="coO" placeholder="Your name" autocomplete="name" style="margin-top:8px"><input id="coM" placeholder="Mobile number" inputmode="tel" autocomplete="tel" maxlength="16" style="margin-top:8px"><input id="coP" type="password" placeholder="Choose a password (4 or more)" autocomplete="new-password" style="margin-top:8px"><div class="err" id="coErr"></div><button class="btn pri" id="coMk" style="width:100%">Create</button><button class="btn" id="coBack" style="width:100%;margin-top:10px">Back</button><p class="hint">Your company name, name and mobile number are kept by the app provider to support you and to manage your plan.</p></div>';
   $('#coBack').onclick=coShow;
   $('#coMk').onclick=function(){
-    var nm=$('#coN').value.trim();if(!nm){$('#coErr').textContent='Type the company name';return}
-    var id=(coSlug(nm)||'co')+'-'+Math.random().toString(36).slice(2,6),u=coUser(nm),b=$('#coMk');b.disabled=true;
-    coHash(id,u,'1234').then(function(h){
-      var c={id:id,name:nm,user:u,h:h,d:1,sync:0};coSave(c);
-      var fin=function(){$('#co').innerHTML='<div class="cob"><div class="logo">▦</div><h3>'+esc(nm)+' created</h3><p class="sub">User name: <b>'+esc(u)+'</b><br>Password: <b>1234</b></p><p class="hint">Please change the password in Settings, Company &amp; login, after you open it.</p><button class="btn pri" id="coOk" style="width:100%">Open</button></div>';$('#coOk').onclick=function(){coOpen(id)}};
+    var nm=$('#coN').value.trim(),ow=$('#coO').value.trim(),mb=$('#coM').value.replace(/[^0-9]/g,''),pw=$('#coP').value,E=$('#coErr');
+    if(mb.length===12&&mb.indexOf('91')===0)mb=mb.slice(2);
+    if(nm.length<2){E.textContent='Type the company name';return}
+    if(ow.length<2){E.textContent='Type your name';return}
+    if(!/^[6-9][0-9]{9}$/.test(mb)){E.textContent='Type a 10-digit mobile number';return}
+    if(pw.length<4){E.textContent='The password needs 4 or more characters';return}
+    var id=(coSlug(nm)||'co')+'-'+Math.random().toString(36).slice(2,6),u=coUser(nm),b=$('#coMk');b.disabled=true;E.textContent='';
+    coHash(id,u,pw).then(function(h){
+      var c={id:id,name:nm,user:u,h:h,d:1,sync:0,o:{owner:ow,mobile:mb}};
+      var fin=function(){coSave(c);$('#co').innerHTML='<div class="cob"><div class="logo">▦</div><h3>'+esc(nm)+' is ready</h3><p class="sub">User name: <b>'+esc(u)+'</b><br>Password: the one you just chose</p><p class="hint">You have 30 days free with Estimates. Ask for a product key to unlock billing and everything else.</p><button class="btn pri" id="coOk" style="width:100%">Open</button></div>';$('#coOk').onclick=function(){coOpen(id)}};
       if(!window.GB_UPD)return fin();
-      gpost({action:'co_put',co:{id:id,name:nm,user:u,h:h}}).then(function(r){if(r&&r.ok)coSave({id:id,sync:1})}).catch(function(){}).then(fin);
+      gpost({action:'co_put',co:{id:id,name:nm,user:u,h:h},o:c.o}).then(function(r){
+        if(r&&r.ok){c.sync=1;fin();return}
+        b.disabled=false;E.textContent=r&&r.err==='name and mobile are needed'?'Please check your name and mobile number':'Could not create the company. Please try again'
+      }).catch(function(){fin()})   /* no internet: it is created here and registered when the app is next online */
     });
   };
 }
@@ -6494,7 +6707,7 @@ function sideWho(){var e=$('#sideWho');if(e)e.textContent=ROLE==='s'&&WHO?WHO.na
 function swAcc(){var a=[];try{a=JSON.parse(sessionStorage.getItem('gb_acc')||'[]')}catch(x){}a=Array.isArray(a)?a:[];if(CO&&ROLE==='o'&&!a.some(function(x){return x.id===CO})){var c=coFind(CO);if(c)a.unshift({id:CO,name:c.name,r:'o',user:c.user,h:c.h})}return a}
 function swShow(){var b=$('#sideSw');if(!b)return;var ok=ROLE==='o'||(ROLE==='s'&&(function(){var r=staffRec();return !!(r&&r.sw)&&swAcc().length>1})());b.hidden=!ok}
 function startApp(){load();nfBadge();window.__gbReady=1;setTimeout(stNotify,4000);setTimeout(function(){var g='';try{g=localStorage.getItem('gb_go')||'';localStorage.removeItem('gb_go')}catch(e){}if(g)nfGo(g)},1800);sideWho();if(ROLE==='s'&&WHO){ME={name:WHO.name||'Staff',wid:WHO.wid};setRole('staff');applyRights();swShow();staffAlive()}if(!WK){var _ch=0;db.staff.forEach(function(z){if(!db.workers.some(function(w){return w.id===z.id})){db.workers.push({id:z.id,name:z.name,mobile:'',rate:0,lon:0,lu:'',lh:''});_ch=1}});if(_ch)persist(true)}
-  if(WK){applyTheme(db.theme);applyView();renderShop();setHeader();show('Work');wwStart();initUpdates();staffAlive();setTimeout(bioOffer,2500);return}wkOwnerStart();setTimeout(bioOffer,2500);setTimeout(sumStartup,3000);setTimeout(todayChecks,5000);setInterval(todayChecks,36e5);if(!db.profile.name){var cc=coFind(CO);if(cc&&cc.name)db.profile.name=cc.name}coSettings();renderConn();webReminders();coPushPending();seed();seedItems();ensureKadappa();applyTheme(db.theme);applyView();renderShop();counts();setHeader();renderRows();show('Home');initUpdates();initBackup();sySetup();setTimeout(function(){remReschedule();var n=remDueNow().length;if(n&&!lockOn())toast(n+' follow-up'+(n>1?'s':'')+' due. See the Dues page')},2500);if(ROLE!=='s')setTimeout(initRestore,1500);if(db.lockReset){db.lockReset=0;persist(true);setTimeout(function(){toast('PIN lock was upgraded. Please set your PIN again in Settings')},2500)}}
+  if(WK){applyTheme(db.theme);applyView();renderShop();setHeader();show('Work');wwStart();initUpdates();staffAlive();setTimeout(bioOffer,2500);return}wkOwnerStart();setTimeout(bioOffer,2500);setTimeout(sumStartup,3000);setTimeout(todayChecks,5000);setInterval(todayChecks,36e5);if(!db.profile.name){var cc=coFind(CO);if(cc&&cc.name)db.profile.name=cc.name}coSettings();renderConn();webReminders();coPushPending();seed();seedItems();ensureKadappa();applyTheme(db.theme);applyView();renderShop();counts();setHeader();renderRows();show('Home');initUpdates();initBackup();setTimeout(bkNag,7000);sySetup();setTimeout(function(){remReschedule();var n=remDueNow().length;if(n&&!lockOn())toast(n+' follow-up'+(n>1?'s':'')+' due. See the Dues page')},2500);if(ROLE!=='s')setTimeout(initRestore,1500);if(db.lockReset){db.lockReset=0;persist(true);setTimeout(function(){toast('PIN lock was upgraded. Please set your PIN again in Settings')},2500)}}
 coBoot().then(function(ok){if(ok){startApp()}});
 window.addEventListener('beforeunload',function(){if(!CO)return;try{localStorage.setItem(DKEY,JSON.stringify({bill:bill,cur:cur}))}catch(e){}});
 window.__gb={get cur(){return cur},get db(){return db},get bill(){return bill},get stack(){return navStack},restoreText:restoreText,sanitizeDb:sanitizeDb,csv:csv,show:show};
