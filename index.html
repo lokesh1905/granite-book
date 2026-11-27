@@ -388,6 +388,14 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
 @media(pointer:coarse){.ibn,.rbt .btn.sm,.chips button,.bvt .chips button{min-height:44px;min-width:44px}}
 .stl b,.dsum b{overflow-wrap:anywhere;font-size:clamp(13px,4.4vw,18px)}
 @media(max-width:700px){.page>.wrap{padding-bottom:110px!important}}
+/* settings rows, attendance bar, home search */
+.srow{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:10px}
+.srow .st{flex:1;min-width:0}.srow .st b{display:block;font-size:16px}.srow .st .hint{display:block;margin:3px 0 0;font-size:13px}
+.srow .btn{flex:none;min-width:92px}
+.kbar{position:sticky;bottom:14px;z-index:41;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--acc);box-shadow:0 8px 26px rgba(15,23,42,.25);margin-top:12px}
+.kbar[hidden]{display:none}.kbar span{flex:1;font-weight:700;font-size:14px}
+#pKarigar .kcard.kpend{outline:2px dashed var(--acc);outline-offset:-3px}
+#hq{flex:1;min-width:0}
 </style>
 </head>
 <body>
@@ -435,6 +443,21 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
     <div id="licBar" hidden></div>
     <section class="page on" id="pHome"><div class="wrap">
       <div class="card" id="draftBar" hidden style="margin-bottom:10px;padding:12px 14px"><b>Bill in progress</b><div id="draftTxt" style="color:var(--mut);font-size:13px;margin:2px 0 8px"></div><div class="btns" style="justify-content:flex-start"><button class="btn pri sm" data-dc="1">Continue</button><button class="btn sm dng" data-dd="1">Discard</button></div></div>
+      <div class="addrow" id="hqRow"><input class="in" type="search" id="hq" placeholder="🔍 Search bills, customers, staff, items…" autocomplete="off" aria-label="Search everything"><button class="btn" id="hqAdv" aria-label="Filters">⚙ Filters</button></div>
+      <div class="card" id="hqBox" hidden style="padding:12px 14px;margin-bottom:10px">
+        <div class="fgrid">
+          <div class="fld"><label for="hqT">Look in</label><select class="in" id="hqT"><option value="all">Everything</option><option value="bills">Bills</option><option value="customers">Customers</option><option value="estimates">Estimates</option><option value="staff">Staff</option><option value="items">Stones &amp; items</option><option value="contractors">Contractors</option><option value="suppliers">Suppliers</option></select></div>
+          <div class="fld"><label for="hqS">Bill status</label><select class="in" id="hqS"><option value="">Any</option><option value="due">Pending (due)</option><option value="paid">Fully paid</option></select></div>
+          <div class="fld"><label for="hqF">From date</label><input class="in" type="date" id="hqF"></div>
+          <div class="fld"><label for="hqU">To date</label><input class="in" type="date" id="hqU"></div>
+          <div class="fld full"><label for="hqG">Stone / item sold</label><select class="in" id="hqG"><option value="">Any</option></select></div>
+          <div class="fld"><label for="hqMin">Amount from (₹)</label><input class="in" id="hqMin" inputmode="decimal"></div>
+          <div class="fld"><label for="hqMax">Amount up to (₹)</label><input class="in" id="hqMax" inputmode="decimal"></div>
+        </div>
+        <div class="btns" style="margin-top:8px"><button class="btn" id="hqClr">Clear all</button></div>
+        <p class="hint" style="margin:8px 0 0">Status, stone and amount look at bills and estimates. Dates look at bills and estimates.</p>
+      </div>
+      <div id="hqRes" hidden></div>
       <div id="dash"></div>
     </div></section>
 
@@ -579,9 +602,11 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
     <section class="page" id="pReq"><div class="wrap"><div id="rqBox"></div></div></section>
     <section class="page" id="pMe"><div class="wrap"><div id="meBox"></div></div></section>
     <section class="page" id="pKarigar"><div class="wrap">
+      <div class="addrow"><input class="in" type="search" id="kSearch" placeholder="Search staff…" aria-label="Search staff" autocomplete="off"><button class="btn" id="kAll" title="Mark everyone who is not marked as present">✔ Rest present</button></div>
       <div class="addrow"><input class="in" type="date" id="kDate" aria-label="Attendance date"><button class="btn pri" id="kAdd">＋ Staff</button></div>
       <div class="ksm" id="kSum"></div>
       <div class="kgd" id="kList"></div>
+      <div class="kbar" id="kBar" hidden><span id="kBarT"></span><button class="btn" id="kDisc">Discard</button><button class="btn pri" id="kSave">Save attendance</button></div>
     </div></section>
 
     <section class="page" id="pDues"><div class="wrap">
@@ -636,7 +661,7 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
     <section class="page" id="pSettings">
       <div id="sbody"><div class="wrap">
         <div id="bioBox"></div>
-        <div class="card" style="padding:12px 14px"><button class="btn" id="ordBtn">↕ Arrange menu</button><span class="hint" style="margin-left:8px">Or press and hold a menu item (right-click on a computer)</span></div>
+        <div class="card srow"><div class="st"><b>↕ Arrange menu</b><span class="hint">Choose the order of the menu. You can also press and hold a menu item (right-click on a computer).</span></div><button class="btn" id="ordBtn">Arrange</button></div>
         <details class="card grp">
           <summary>🏢 Company & login</summary>
           <div class="gb"><p class="hint" id="coInfo"></p>
@@ -649,7 +674,7 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
           <summary>💻 Laptop link</summary>
           <div class="gb"><p class="hint">Open your shop on a laptop: open the link, then log in with your user name and password. Your data loads by itself.</p><button class="btn pri" id="lkBtn">Show laptop link</button></div>
         </details>
-        <div class="card grp" id="audGrp" style="padding:12px 14px"><button class="btn" id="audBtn">📜 Activity log</button><span class="hint" style="margin-left:8px">who changed or deleted what</span></div>
+        <div class="card grp srow" id="audGrp"><div class="st"><b>📜 Activity log</b><span class="hint">Who added, changed or deleted what.</span></div><button class="btn" id="audBtn">Open</button></div>
         <details class="card grp" id="cnGrp">
           <summary>🔗 Server connection (laptop and phone)</summary>
           <div class="gb"><p class="hint" id="cnInfo"></p>
@@ -681,12 +706,16 @@ kbd{font:700 12px/1 ui-monospace,monospace;padding:3px 7px;border:1px solid var(
           </div></div>
         </details>
         <details class="card grp">
-          <summary>🖨 PDF options</summary>
-          <div class="gb"><p class="hint">What goes into a bill PDF when you share it. You can always make the sizes page or the payments statement as a separate PDF from the bill, to attach later.</p>
+          <summary>🖨 PDF &amp; printing</summary>
+          <div class="gb"><p class="hint">The 📄 PDF button on a bill makes the type you choose here. For another type once, press and hold the PDF button (right-click on a computer).</p>
+            <div class="fld"><label for="pdL">Bill PDF type</label><select class="in" id="pdL"><option value="std">Standard bill</option><option value="tally">Tally-style GST invoice</option><option value="thermal">Thermal receipt</option></select></div>
+            <div class="sec">Standard bill</div>
             <label class="chk"><input type="checkbox" id="pdS"> <span>Add the sizes page to the bill PDF</span></label>
             <label class="chk"><input type="checkbox" id="pdP"> <span>Show every payment (date-wise) in the bill PDF</span></label>
+            <div class="sec">Estimate</div>
             <label class="chk"><input type="checkbox" id="pdE"> <span>Estimate PDF includes the sizes</span></label>
-            <label class="chk" style="gap:8px"><span>Thermal receipt width</span><select class="in" id="pdW" style="width:110px"><option value="80">80 mm</option><option value="58">58 mm</option></select></label>
+            <div class="sec">Thermal receipt</div>
+            <label class="chk" style="gap:8px"><span>Paper width</span><select class="in" id="pdW" style="width:110px"><option value="80">80 mm</option><option value="58">58 mm</option></select></label>
             <p class="hint" style="margin-top:8px">The bill PDF always shows the total received till date and the balance due.</p></div>
         </details>
         <details class="card grp">
@@ -2383,8 +2412,8 @@ var ROLE='o',WHO=null;try{ROLE=sessionStorage.getItem('gb_role')||'o';WHO=JSON.p
 var WK=!!CO&&ROLE==='w'&&!!WHO,ME={name:'Owner',wid:''};
 var KEY=WK?'gb_wk_'+CO:SFX?'gb_data'+SFX:'gb_data_v1',DKEY=WK?'gb_wkd_'+CO:SFX?'gb_draft'+SFX:'gb_draft_v1',MINROWS=5;
 var $=function(s){return document.querySelector(s)};
-var APP_VER='2.9.37';
-var APP_LOG=[['2.9.37','Enter moves to the next field in Settings and the last Enter saves. Reloading the page while the PIN lock is showing no longer opens the app without the PIN. Bill totals are rounded to whole rupees, so no ₹0.40 stays pending. Minus signs, letters and extra dots in amount boxes now show a message. Future or very old payment and expense dates are refused. Customer mobile must be 10 digits and cannot repeat. A second staff member with the same name is refused. Number boxes select their old value, Shift+Enter goes back. Long names are cut neatly on PDFs. Buttons are bigger on touch screens. Staff without rights no longer see bill totals or Receive payment. Locked plans no longer open forms.'],['2.9.36','Esc now closes every pop-up on a laptop, including payment forms. View bills shows 150 bills at a time with a Show more button, so a shop with thousands of bills opens fast.'],['2.9.35','Undo bar for deletes (10 seconds). View bills can filter by date range and by stone. Estimates keep their earlier versions: a Revised tag, History, and Restore. A statement for one customer between any two dates, as PDF or WhatsApp text, from the customer ledger. Renewal reminder once a day when the plan has 7 days left. Dashboard shows Remind overdue customers. Settings uses two columns on a laptop.'],['2.9.34','The Measuring box is removed from Settings. Plus now starts at 1 on every new stone. Tap the Plus box to change it (the number is selected, so just type). An item that has its own plus still uses that.'],['2.9.33','Staff page redesigned: summary tiles (present, half day, absent, not marked, to pay) and a card for each person with today’s status, month figures and one-tap Present, Half day and Absent buttons. Right-click on a laptop, or press and hold on the phone or app, now opens a menu on staff, customers, dues, estimates, jobs, contractors, suppliers, purchases, vehicles and expenses, and on the bill and payment rows inside ledgers, staff and supplier details.'],['2.9.32','Laptop and tablet screens use the full width: staff, customer ledger, contractor, supplier, purchase, vehicle, stock item and job details open wide in two columns like the bill view, add and edit forms open as a wider card, and the Estimates, Dues, Jobs, Staff, Customers, Contractors, Vehicles and bill lists show two columns. Phones are unchanged.'],['2.9.31','Home is now a Dashboard: quick links (new bill, estimate, receive payment, add customer, view bills, cash book, reports, backup now), today vs yesterday, money to collect with the top 5 customers, this month vs last month with a 7-day chart, work to do, and your latest 5 bills. The full bill list moved to View bills in the menu. Staff see only the quick links and work cards. Updating the app now resumes where it stopped if the screen turns off or you leave the app.'],['2.9.30','Bill view on laptop and tablet: opens wide like a proper invoice (shop details on top, items on the left, totals and payments on the right, buttons in one row). Phones look the same as before.'],['2.9.29','Sign-up: the person chooses their own login name (checked live) and password. A login name now belongs to one person on the whole server, owners and staff alike, so two shops can never share a login. Creating a company needs internet. Needs the new Code.gs.'],['2.9.28','Safer sign-up: every new company gets its own unique login name, so two shops can never open each other with the same name and password. The login list shows the owner and last 4 digits of the mobile. Signing up again with the same shop name and mobile asks if you meant to log in. Admin shows a warning for companies that already share a login and password. Needs the new Code.gs.'],['2.9.27','Fixes after testing: the 15-day backup-folder reminder now also appears when a PIN lock is set; backup folder can be changed after a plan ends; merge duplicates is stopped after a plan ends; Download everything is owner only and leaves out the PIN details; company and name fields are limited to 60 characters. Needs the new Code.gs: a wrong password for one shop no longer locks the same login name for other shops.'],['2.9.26','Admin: PIN (needs the new Code.gs), payment record for each company, send a product key on WhatsApp. Summary: Today and Yesterday. Reports: pick any month, GST summary, purchase register. Backup: Check my backup, Download everything. Customers: Merge duplicates: finds customers with the same name or mobile and merges them (bills, payments and advances move to the one you keep). Settings > Share app: add your short link and it is used when sharing.'],['2.9.25','Settings > Backup now shows the backup folder and lets you change it (phone: a folder inside Documents; computer: pick any folder, for example on another drive). Every 15 days the app reminds you if the folder is still the default. New: Settings > Share app sends the app file (phone) or the app link (browser) to a new shop.'],['2.9.24','Product mode: new companies sign up with company name, owner name and mobile and start as a 30-day guest (Estimates only). A 16-character product key unlocks everything. When a plan ends the company can still view and export. New Admin tab (only for the owner company set as ADMIN_CO in Code.gs): all companies, plans, keys, password reset and usage. Needs the updated Code.gs.'],['2.9.23','Several devices can bill at the same time: a bill number is reserved on the server when billing starts (an abandoned number is given back), so numbers never clash. Joining or logging in now MERGES: every bill and record from this device and from all other devices are kept together, nothing is replaced. Payments added to the same bill on two devices are both kept. Needs the updated Code.gs (bill-number actions) in Google Apps Script.'],['2.9.22','Login now opens the company’s real online data by itself: no Join / Replace / Merge questions. If this device held a different copy, it is kept as a safety copy on the device first.'],['2.9.21','Sync: a device no longer silently replaces the shop’s online sync code. If this device is syncing a different copy than the one saved online (the cause of one device showing different bills), it asks whether to join the online copy or keep this one as the main. Tap the small sync dot to see its status or error.'],['2.9.20','New “Tally-style PDF” button on a saved bill: one framed A4 tax invoice (GSTIN, billed to / shipped to, HSN, CGST/SGST, tax summary, amount in words, bank details, terms, signature). The existing Share PDF is unchanged.'],['2.9.19','Quick billing view: pick “⚡ Quick” on the bill, type an item (e.g. araldite), Enter, quantity, Enter, rate, Enter and it is added. Granite opens the sizes screen and comes back. Keyboard keys: F1 save, F2 granite, F3 item, F4 charge, F6 customer, F7 C/O, F8 discount, F9 received, Esc back, ? lists all keys. Works in Classic view too.'],['2.9.18','Forgot password: the owner can make a new password for any staff (Staff, open him, Edit, “Forgot password?”). Cutter screen has a new look with job cards, today summary and bottom tabs; he can switch back to Classic in his Profile. Vehicles removed from the owner menu. Camera and photo matching removed.'],['2.9.17','C/O contractors: pick or add a contractor on the bill (name or mobile). New Contractors page with customers brought, sales, pending and profit. Shown in Reports (and CSV), Summary and on the bill and invoice. Fixed the Receive payment button being covered in the bill view.'],['2.9.16','Faster sync: a change is sent about 1 second after you make it (was 4), and the app checks the server again when you come back to it.'],['2.9.15','Press and hold (phone) or right-click (computer) a bill, customer, item, stock row, due or menu item for quick actions. Arrange menu in Settings; Requests moved up. Fingerprint login now works for several users on one phone, including admin, and asks once after login.'],['2.9.14','Item photos now sync as their own records, so they are kept when you refresh or when another phone edits the item. Update every phone and the laptop to this version.'],['2.9.13','Activity log in Settings (owner): who added, changed or deleted bills, items, stock, staff, attendance and payments, with date and time. Synced between phones.'],['2.9.12','Scan with the camera button at the top: read an item QR label, or take or choose a photo of a stone to find the closest items (top 3 with match %). Every item has a QR label (Items list and Stock details); New search button on every result.'],['2.9.11','Enter key moves to the next field while billing, in the measure sheet and in forms, and saves on the last one (like Tally). Items and stock can have up to 4 photos and a shelf or rack number; search finds items by shelf'],['2.9.10','Staff pages: Profile, Attendance (month calendar, tap a day, dropdown and Save), Money and advances (clear dates) and Requests (filters, compact, show more). Sidebar grouped. Admin attendance uses the same inline dropdown. Several loading photos at once, kept on the cutter phone and sent to the admin. Notification manager: filters, mark read, delete, mute. New teal G icon. Nos on the bill sizes sheet. Laptop link replaces Server connection and Sync phones'],['2.9.9','Payment reminders: promise-to-pay date and amount, repeat until paid, snooze, assign a follow-up to a staff member, reminders sync across devices and stop by themselves when the customer pays'],['2.9.8','Cutter view and request preview always show the number of pieces, even when it is 1. Staff and cutters see all their requests (bill requests and each attendance day) with Waiting, Approved or Rejected; Show more in My requests, the admin Recent list and the notification bell'],['2.9.7','Merged build: delivery, photos, cash close and piece rate (2.9.6) together with the bug fixes of the regression pass: backups include staff requests, narrow-phone top bar fix'],['2.9.6','Part delivery with a challan per trip, Today strip (late deliveries, cheques, cash), photos on jobs and from the cutter, challan on WhatsApp, cheque reminders the day before, daily cash close, piece-rate pay, larger jobs reach the cutter, backups keep the sync code'],['2.9.5','Fixes from the billing-to-delivery review: editing a bill no longer loses cutter, vehicle and driver; counter sales skip the job list; Delivered asks about money due; challan number, vehicle, receiver and e-way bill number; cutter is told when sizes change; stock shows what is still in the yard'],['2.9.4','The web page and the app installed from the link now update themselves: a green banner appears when a new version is online, with a Refresh now button'],['2.9.3','Notification centre (bell) for everyone: tap an item to open the page. Tapping a phone notification opens the right page. Requests now show the full bill (customer, sizes, amounts, job). Dark theme fixes'],['2.9.2','Refresh button in the top bar. Live sync now turns on by itself for the owner, so the laptop sees phone data after login without any setup'],['2.9.1','The laptop address shared from the phone now points to the granite-book web page'],['2.9.0','Cutters get My profile: attendance marking (admin approves), days, money, advances, salary slip PDF. Fingerprint login on Android for everyone. New bill pulls the latest data first so bill numbers do not clash. Needs the new Code.gs for the cutter profile'],['2.8.0','Karigar is now Staff. Requests inbox: staff ask, you approve (delete or edit a saved bill, reopen a done job, attendance). Staff mark their own attendance for your approval. Attendance is a dropdown. My profile page for staff. Salary slip PDF. Done jobs are locked for the cutter. Staff rights now include Edit'],['2.7.0','Manage companies screen for the admin (rename, reset password, remove, add). Eye button to see passwords. Suggested user name and password for new staff. Update banner. Sync every 10 seconds with a status light. No PIN at app start. Staff rights now include Delete and Returns. Fixed: password lost when login switched off then on'],['2.6.0','Cloud login: on a laptop or a new phone just open the web address and log in, your data loads by itself. No codes to copy. Share the web address from Settings'],['2.5.0','One login screen for everybody (user name and password only), company switching after login, Users and rights for staff, switch off a login and keep the record'],['2.4.4','Connection code check no longer rejects shorter keys and says exactly what is wrong'],['2.4.3','Companies are sent to your online server as soon as the app opens, so a forgotten password can be reset from the sheet'],['2.4.2','Private link now points to the separate public web repo granite-web'],['2.4.1','Log out button at the bottom of the menu for everyone, staff and cutter logins can be saved and tested on the same phone, wage optional for a karigar, clearer message when the online script is old'],['2.4.0','Nos (number of pieces) for every size row: sqft = (length + plus) x (width + plus) x nos / 144. Shown on the measuring sheet, bill, sizes PDF, estimates and the cutter view'],['2.3.2','Copy buttons work in every browser, saving a bill with a typed but unadded customer now opens the add-customer form, Enter adds a new customer'],['2.3.1','A permanent private link: open it once on the laptop and it connects by itself, then bookmark it'],['2.3.0','Use the same app on a laptop: open index.html or the web address in any browser, paste the connection code from your phone, then company logins, live sync and backups work there too. Can be installed as a web app'],['2.2.0','Cash book and expenses, weekly and monthly summary, staff logins, combine estimates into one bill and customer on estimates, monthly customer statements, vehicle and driver log, idle lock, loader enters the vehicle number'],['2.1.0','Cutter and loader login on his own phone with only his assigned jobs and sizes, job notifications, thermal receipt, cheque tracking, all companies summary, remove company, new companies start without sample customers'],['2.0.0','Multiple companies: choose a company at start, log in with user name and password, switch company from Settings, logins kept online, backups in one folder with a sub folder per company'],['1.3.0','PDF options in Settings, sizes and payments as separate PDFs, plus not printed and default plus, WhatsApp and follow-up reminders per bill, settings saved in backup'],['1.2.0','Stock, purchases and suppliers with profit per bill; credit notes and returns; extra charges on bills; last rate per customer; one-tap overdue reminders; rate list PDF'],['1.1.0','Compact or classic list style; Jobs and delivery challan; Karigar wages; item photos and QR labels; live sync between phones'],['1.0.9','Compact Customers list; tap a customer to open the ledger; Advance now inside the ledger'],['1.0.8','Bill PDF shows item names only; choose to print sizes on a last page'],['1.0.7','Fixes from full testing: fast typing, bill in progress banner, zero rate and zero size checks, cleaner GST PDF'],['1.0.6','Security and bug fixes: encrypted phone backup, stronger PIN, safer restore and export, payment and advance fixes'],['1.0.5','Back button and navigation; one Backup button; proper bill PDF; auto update on open; bank and terms on bills'],['1.0.4','GST tax invoice (Tally style); reports with CSV export; PIN lock with owner and staff; WhatsApp to a number; advance without a bill'],['1.0.3','Payments and dues; customer ledger; share bills as PDF; make a bill from an estimate'],['1.0.2','Light theme by default; Kadappa half-foot sizing; scrambled automatic backup to Google Drive'],['1.0.1','Estimate page; item categories; length and width must both be filled'],['1.0.0','First release']];
+var APP_VER='2.9.39';
+var APP_LOG=[['2.9.39','Bill details: a small ▾ button next to PDF shows the other PDF types. Nos can now be a part like 0.5. The plan expiry can no longer be avoided by turning the phone clock back.'],['2.9.38','Bill details now have one PDF button; choose its type in Settings (press and hold it for the other PDFs). Staff: search box, tap Present/Half/Absent for everyone and then Save attendance. Home has a search box with filters. Fingerprint, Arrange menu and Activity log rows in Settings look the same now.'],['2.9.37','Enter moves to the next field in Settings and the last Enter saves. Reloading the page while the PIN lock is showing no longer opens the app without the PIN. Bill totals are rounded to whole rupees, so no ₹0.40 stays pending. Minus signs, letters and extra dots in amount boxes now show a message. Future or very old payment and expense dates are refused. Customer mobile must be 10 digits and cannot repeat. A second staff member with the same name is refused. Number boxes select their old value, Shift+Enter goes back. Long names are cut neatly on PDFs. Buttons are bigger on touch screens. Staff without rights no longer see bill totals or Receive payment. Locked plans no longer open forms.'],['2.9.36','Esc now closes every pop-up on a laptop, including payment forms. View bills shows 150 bills at a time with a Show more button, so a shop with thousands of bills opens fast.'],['2.9.35','Undo bar for deletes (10 seconds). View bills can filter by date range and by stone. Estimates keep their earlier versions: a Revised tag, History, and Restore. A statement for one customer between any two dates, as PDF or WhatsApp text, from the customer ledger. Renewal reminder once a day when the plan has 7 days left. Dashboard shows Remind overdue customers. Settings uses two columns on a laptop.'],['2.9.34','The Measuring box is removed from Settings. Plus now starts at 1 on every new stone. Tap the Plus box to change it (the number is selected, so just type). An item that has its own plus still uses that.'],['2.9.33','Staff page redesigned: summary tiles (present, half day, absent, not marked, to pay) and a card for each person with today’s status, month figures and one-tap Present, Half day and Absent buttons. Right-click on a laptop, or press and hold on the phone or app, now opens a menu on staff, customers, dues, estimates, jobs, contractors, suppliers, purchases, vehicles and expenses, and on the bill and payment rows inside ledgers, staff and supplier details.'],['2.9.32','Laptop and tablet screens use the full width: staff, customer ledger, contractor, supplier, purchase, vehicle, stock item and job details open wide in two columns like the bill view, add and edit forms open as a wider card, and the Estimates, Dues, Jobs, Staff, Customers, Contractors, Vehicles and bill lists show two columns. Phones are unchanged.'],['2.9.31','Home is now a Dashboard: quick links (new bill, estimate, receive payment, add customer, view bills, cash book, reports, backup now), today vs yesterday, money to collect with the top 5 customers, this month vs last month with a 7-day chart, work to do, and your latest 5 bills. The full bill list moved to View bills in the menu. Staff see only the quick links and work cards. Updating the app now resumes where it stopped if the screen turns off or you leave the app.'],['2.9.30','Bill view on laptop and tablet: opens wide like a proper invoice (shop details on top, items on the left, totals and payments on the right, buttons in one row). Phones look the same as before.'],['2.9.29','Sign-up: the person chooses their own login name (checked live) and password. A login name now belongs to one person on the whole server, owners and staff alike, so two shops can never share a login. Creating a company needs internet. Needs the new Code.gs.'],['2.9.28','Safer sign-up: every new company gets its own unique login name, so two shops can never open each other with the same name and password. The login list shows the owner and last 4 digits of the mobile. Signing up again with the same shop name and mobile asks if you meant to log in. Admin shows a warning for companies that already share a login and password. Needs the new Code.gs.'],['2.9.27','Fixes after testing: the 15-day backup-folder reminder now also appears when a PIN lock is set; backup folder can be changed after a plan ends; merge duplicates is stopped after a plan ends; Download everything is owner only and leaves out the PIN details; company and name fields are limited to 60 characters. Needs the new Code.gs: a wrong password for one shop no longer locks the same login name for other shops.'],['2.9.26','Admin: PIN (needs the new Code.gs), payment record for each company, send a product key on WhatsApp. Summary: Today and Yesterday. Reports: pick any month, GST summary, purchase register. Backup: Check my backup, Download everything. Customers: Merge duplicates: finds customers with the same name or mobile and merges them (bills, payments and advances move to the one you keep). Settings > Share app: add your short link and it is used when sharing.'],['2.9.25','Settings > Backup now shows the backup folder and lets you change it (phone: a folder inside Documents; computer: pick any folder, for example on another drive). Every 15 days the app reminds you if the folder is still the default. New: Settings > Share app sends the app file (phone) or the app link (browser) to a new shop.'],['2.9.24','Product mode: new companies sign up with company name, owner name and mobile and start as a 30-day guest (Estimates only). A 16-character product key unlocks everything. When a plan ends the company can still view and export. New Admin tab (only for the owner company set as ADMIN_CO in Code.gs): all companies, plans, keys, password reset and usage. Needs the updated Code.gs.'],['2.9.23','Several devices can bill at the same time: a bill number is reserved on the server when billing starts (an abandoned number is given back), so numbers never clash. Joining or logging in now MERGES: every bill and record from this device and from all other devices are kept together, nothing is replaced. Payments added to the same bill on two devices are both kept. Needs the updated Code.gs (bill-number actions) in Google Apps Script.'],['2.9.22','Login now opens the company’s real online data by itself: no Join / Replace / Merge questions. If this device held a different copy, it is kept as a safety copy on the device first.'],['2.9.21','Sync: a device no longer silently replaces the shop’s online sync code. If this device is syncing a different copy than the one saved online (the cause of one device showing different bills), it asks whether to join the online copy or keep this one as the main. Tap the small sync dot to see its status or error.'],['2.9.20','New “Tally-style PDF” button on a saved bill: one framed A4 tax invoice (GSTIN, billed to / shipped to, HSN, CGST/SGST, tax summary, amount in words, bank details, terms, signature). The existing Share PDF is unchanged.'],['2.9.19','Quick billing view: pick “⚡ Quick” on the bill, type an item (e.g. araldite), Enter, quantity, Enter, rate, Enter and it is added. Granite opens the sizes screen and comes back. Keyboard keys: F1 save, F2 granite, F3 item, F4 charge, F6 customer, F7 C/O, F8 discount, F9 received, Esc back, ? lists all keys. Works in Classic view too.'],['2.9.18','Forgot password: the owner can make a new password for any staff (Staff, open him, Edit, “Forgot password?”). Cutter screen has a new look with job cards, today summary and bottom tabs; he can switch back to Classic in his Profile. Vehicles removed from the owner menu. Camera and photo matching removed.'],['2.9.17','C/O contractors: pick or add a contractor on the bill (name or mobile). New Contractors page with customers brought, sales, pending and profit. Shown in Reports (and CSV), Summary and on the bill and invoice. Fixed the Receive payment button being covered in the bill view.'],['2.9.16','Faster sync: a change is sent about 1 second after you make it (was 4), and the app checks the server again when you come back to it.'],['2.9.15','Press and hold (phone) or right-click (computer) a bill, customer, item, stock row, due or menu item for quick actions. Arrange menu in Settings; Requests moved up. Fingerprint login now works for several users on one phone, including admin, and asks once after login.'],['2.9.14','Item photos now sync as their own records, so they are kept when you refresh or when another phone edits the item. Update every phone and the laptop to this version.'],['2.9.13','Activity log in Settings (owner): who added, changed or deleted bills, items, stock, staff, attendance and payments, with date and time. Synced between phones.'],['2.9.12','Scan with the camera button at the top: read an item QR label, or take or choose a photo of a stone to find the closest items (top 3 with match %). Every item has a QR label (Items list and Stock details); New search button on every result.'],['2.9.11','Enter key moves to the next field while billing, in the measure sheet and in forms, and saves on the last one (like Tally). Items and stock can have up to 4 photos and a shelf or rack number; search finds items by shelf'],['2.9.10','Staff pages: Profile, Attendance (month calendar, tap a day, dropdown and Save), Money and advances (clear dates) and Requests (filters, compact, show more). Sidebar grouped. Admin attendance uses the same inline dropdown. Several loading photos at once, kept on the cutter phone and sent to the admin. Notification manager: filters, mark read, delete, mute. New teal G icon. Nos on the bill sizes sheet. Laptop link replaces Server connection and Sync phones'],['2.9.9','Payment reminders: promise-to-pay date and amount, repeat until paid, snooze, assign a follow-up to a staff member, reminders sync across devices and stop by themselves when the customer pays'],['2.9.8','Cutter view and request preview always show the number of pieces, even when it is 1. Staff and cutters see all their requests (bill requests and each attendance day) with Waiting, Approved or Rejected; Show more in My requests, the admin Recent list and the notification bell'],['2.9.7','Merged build: delivery, photos, cash close and piece rate (2.9.6) together with the bug fixes of the regression pass: backups include staff requests, narrow-phone top bar fix'],['2.9.6','Part delivery with a challan per trip, Today strip (late deliveries, cheques, cash), photos on jobs and from the cutter, challan on WhatsApp, cheque reminders the day before, daily cash close, piece-rate pay, larger jobs reach the cutter, backups keep the sync code'],['2.9.5','Fixes from the billing-to-delivery review: editing a bill no longer loses cutter, vehicle and driver; counter sales skip the job list; Delivered asks about money due; challan number, vehicle, receiver and e-way bill number; cutter is told when sizes change; stock shows what is still in the yard'],['2.9.4','The web page and the app installed from the link now update themselves: a green banner appears when a new version is online, with a Refresh now button'],['2.9.3','Notification centre (bell) for everyone: tap an item to open the page. Tapping a phone notification opens the right page. Requests now show the full bill (customer, sizes, amounts, job). Dark theme fixes'],['2.9.2','Refresh button in the top bar. Live sync now turns on by itself for the owner, so the laptop sees phone data after login without any setup'],['2.9.1','The laptop address shared from the phone now points to the granite-book web page'],['2.9.0','Cutters get My profile: attendance marking (admin approves), days, money, advances, salary slip PDF. Fingerprint login on Android for everyone. New bill pulls the latest data first so bill numbers do not clash. Needs the new Code.gs for the cutter profile'],['2.8.0','Karigar is now Staff. Requests inbox: staff ask, you approve (delete or edit a saved bill, reopen a done job, attendance). Staff mark their own attendance for your approval. Attendance is a dropdown. My profile page for staff. Salary slip PDF. Done jobs are locked for the cutter. Staff rights now include Edit'],['2.7.0','Manage companies screen for the admin (rename, reset password, remove, add). Eye button to see passwords. Suggested user name and password for new staff. Update banner. Sync every 10 seconds with a status light. No PIN at app start. Staff rights now include Delete and Returns. Fixed: password lost when login switched off then on'],['2.6.0','Cloud login: on a laptop or a new phone just open the web address and log in, your data loads by itself. No codes to copy. Share the web address from Settings'],['2.5.0','One login screen for everybody (user name and password only), company switching after login, Users and rights for staff, switch off a login and keep the record'],['2.4.4','Connection code check no longer rejects shorter keys and says exactly what is wrong'],['2.4.3','Companies are sent to your online server as soon as the app opens, so a forgotten password can be reset from the sheet'],['2.4.2','Private link now points to the separate public web repo granite-web'],['2.4.1','Log out button at the bottom of the menu for everyone, staff and cutter logins can be saved and tested on the same phone, wage optional for a karigar, clearer message when the online script is old'],['2.4.0','Nos (number of pieces) for every size row: sqft = (length + plus) x (width + plus) x nos / 144. Shown on the measuring sheet, bill, sizes PDF, estimates and the cutter view'],['2.3.2','Copy buttons work in every browser, saving a bill with a typed but unadded customer now opens the add-customer form, Enter adds a new customer'],['2.3.1','A permanent private link: open it once on the laptop and it connects by itself, then bookmark it'],['2.3.0','Use the same app on a laptop: open index.html or the web address in any browser, paste the connection code from your phone, then company logins, live sync and backups work there too. Can be installed as a web app'],['2.2.0','Cash book and expenses, weekly and monthly summary, staff logins, combine estimates into one bill and customer on estimates, monthly customer statements, vehicle and driver log, idle lock, loader enters the vehicle number'],['2.1.0','Cutter and loader login on his own phone with only his assigned jobs and sizes, job notifications, thermal receipt, cheque tracking, all companies summary, remove company, new companies start without sample customers'],['2.0.0','Multiple companies: choose a company at start, log in with user name and password, switch company from Settings, logins kept online, backups in one folder with a sub folder per company'],['1.3.0','PDF options in Settings, sizes and payments as separate PDFs, plus not printed and default plus, WhatsApp and follow-up reminders per bill, settings saved in backup'],['1.2.0','Stock, purchases and suppliers with profit per bill; credit notes and returns; extra charges on bills; last rate per customer; one-tap overdue reminders; rate list PDF'],['1.1.0','Compact or classic list style; Jobs and delivery challan; Karigar wages; item photos and QR labels; live sync between phones'],['1.0.9','Compact Customers list; tap a customer to open the ledger; Advance now inside the ledger'],['1.0.8','Bill PDF shows item names only; choose to print sizes on a last page'],['1.0.7','Fixes from full testing: fast typing, bill in progress banner, zero rate and zero size checks, cleaner GST PDF'],['1.0.6','Security and bug fixes: encrypted phone backup, stronger PIN, safer restore and export, payment and advance fixes'],['1.0.5','Back button and navigation; one Backup button; proper bill PDF; auto update on open; bank and terms on bills'],['1.0.4','GST tax invoice (Tally style); reports with CSV export; PIN lock with owner and staff; WhatsApp to a number; advance without a bill'],['1.0.3','Payments and dues; customer ledger; share bills as PDF; make a bill from an estimate'],['1.0.2','Light theme by default; Kadappa half-foot sizing; scrambled automatic backup to Google Drive'],['1.0.1','Estimate page; item categories; length and width must both be filled'],['1.0.0','First release']];
 var db={aud:[],rem:[],exp:[],vehicles:[],trips:[],cclose:[],staff:[],expCats:[],sumOn:0,sumSeen:0,pdf:{sizes:0,pays:0,est:1},view:'',workers:[],att:[],wpay:[],req:[],returns:[],suppliers:[],purchases:[],spay:[],sadj:[],nextCn:1,granites:[],items:[],estimates:[],itemsSeeded:false,updAuto:true,updCheck:0,sheets:[],bills:[],nextNo:1,lastBackup:0,customers:[],contractors:[],seeded:false,profile:{name:'',address:'',mobile:'',email:'',gst:'',gstOn:'off',pre:'',defGst:'18',defPlus:'1',bank:'',bankN:'',bankA:'',bankI:'',bankB:'',upi:'',terms:''},theme:'light',advances:[],units:[],lock:{own:'',stf:'',salt:'',n:0,until:0}};
 var cur=blank();
 var bill=newBill();
@@ -2408,8 +2437,8 @@ function has(v){return String(v).trim()!==''}
 function ftr(v){return (Math.floor(num(v)/6)+1)*0.5}
 function modeOf(it){return catOf(it)==='kadappa'?'ft':''}
 function pv(v){return has(v)&&num(v)>0}
-function nos(r){var n=Math.floor(num(r&&r.n));return n>=1?n:1}
-function pcsOf(rows,plus,mode){var t=0;(rows||[]).forEach(function(r){if(sq(r,plus,mode)!==null)t+=nos(r)});return t}
+function nos(r){var n=Math.round(num(r&&r.n)*100)/100;return n>0?n:1}
+function pcsOf(rows,plus,mode){var t=0;(rows||[]).forEach(function(r){if(sq(r,plus,mode)!==null)t+=nos(r)});return Math.round(t*100)/100}
 function sq(r,plus,mode){if(!pv(r.l)||!pv(r.w))return null;if(mode==='ft')return Math.round(ftr(r.l)*ftr(r.w)*nos(r)*100)/100;var a=(num(r.l)+num(plus))*(num(r.w)+num(plus))*nos(r)/144;return Math.round(a*100)/100}
 function f2(n){return n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function inr(n){var r=Math.round(n);return (r<0?'-':'')+'₹'+Math.abs(r).toLocaleString('en-IN')}
@@ -2429,7 +2458,7 @@ function rowHtml(i){
   return '<tr data-i="'+i+'"><td class="sn">'+(i+1)+'</td>'+
   '<td><input data-f="l" inputmode="decimal" autocomplete="off" aria-label="Length '+(i+1)+'"></td>'+
   '<td><input data-f="w" inputmode="decimal" autocomplete="off" aria-label="Width '+(i+1)+'"></td>'+
-  '<td><input data-f="n" inputmode="numeric" autocomplete="off" placeholder="1" aria-label="Nos '+(i+1)+'"></td>'+
+  '<td><input data-f="n" inputmode="decimal" autocomplete="off" placeholder="1" aria-label="Nos '+(i+1)+'"></td>'+
   '<td class="sq empty">–</td><td class="x"><button class="rx" tabindex="-1" title="Clear this row">✕</button></td></tr>';
 }
 function renderRows(){
@@ -2451,7 +2480,7 @@ function calc(){
   var t=0,trs=$('#rows').children;
   for(var i=0;i<cur.rows.length;i++){var s=sq(cur.rows[i],cur.plus,cur.mode);if(s!==null)t+=s;if(trs[i])paintRow(trs[i],i)}
   $('#tsq').textContent=f2(t);$('#tam').textContent=inr(t*num(cur.rate));
-  var n=0;cur.rows.forEach(function(r){if(sq(r,cur.plus,cur.mode)!==null)n+=nos(r)});
+  var n=0;cur.rows.forEach(function(r){if(sq(r,cur.plus,cur.mode)!==null)n+=nos(r)});n=Math.round(n*100)/100;
   $('#tsub').textContent=(cur.granite?cur.granite+' · ':'')+n+' piece'+(n===1?'':'s')+(cur.id?' · editing':'')+(cur.dirty?' · unsaved':'');
   return t;
 }
@@ -2460,7 +2489,7 @@ function setHeader(){$('#gname').value=cur.granite;$('#plus').value=cur.plus;$('
 $('#rows').addEventListener('input',function(e){
   var inp=e.target;if(!inp.dataset.f)return;
   var tr=inp.closest('tr'),i=+tr.dataset.i;
-  var v=inp.value.replace(inp.dataset.f==='n'?/[^0-9]/g:/[^0-9.]/g,'');if(v!==inp.value)inp.value=v;
+  var v=inp.value.replace(/[^0-9.]/g,'');if(v!==inp.value)inp.value=v;
   cur.rows[i][inp.dataset.f]=v;cur.dirty=true;
   if(i===cur.rows.length-1&&(has(cur.rows[i].l)||has(cur.rows[i].w))){
     cur.rows.push({l:'',w:'',n:''});var ni=cur.rows.length-1;
@@ -2676,6 +2705,8 @@ function go(p,isBack){
       if(v==='s'){saveSettings();show(p,isBack)}else if(v==='n')show(p,isBack);
     });return;
   }
+  if(curPage==='Karigar'&&p!=='Karigar'&&kDirty()){
+    ask('Save attendance?','You marked attendance but did not save it.',[{t:'Keep editing'},{t:'Don’t save',v:'n'},{t:'Save',cls:'pri',v:'s'}]).then(function(v){if(v==='s'){kSaveAtt();show(p,isBack)}else if(v==='n'){kStage={};show(p,isBack)}});return}
   if(curPage==='Bill'&&p!=='Bill'){
     if(hasWork()){
       ask('Save this bill?','You changed this bill but did not save it.',[{t:'Keep editing'},{t:'Don’t save',v:'n'},{t:'Save',cls:'pri',v:'s'}]).then(function(v){
@@ -2795,7 +2826,64 @@ function renderDash(){
     h+='<div class="card dc"><h5>Latest bills <button class="btn sm" data-k="Bills" style="float:right;margin:-4px 0 0">View all →</button></h5>'+(db.bills.length?db.bills.slice(0,5).map(function(b){var du=dueOf(b);return '<div class="row bill" data-id="'+b.id+'"><div class="main"><b>#'+pad(b.no)+' · '+esc(b.cust.name||'')+'</b><span>'+dstr(b.updated)+pst(b)+'</span></div><div class="num"><b>'+inr(b.amount||0)+'</b>'+(du>0?'<span style="color:var(--bad)">Due '+inr(du)+'</span>':'')+'</div></div>'}).join(''):'<div class="empty-s" style="padding:8px 0">No bills yet. Tap New bill to start.</div>')+'</div>';
   }
   el.innerHTML=h+'</div>';
+  hqRender();
 }
+
+/* ---------- search everything from Home ---------- */
+var hqLim={};
+function hqVals(){return {q:$('#hq').value.trim().toLowerCase(),t:$('#hqT').value,s:$('#hqS').value,f:$('#hqF').value,u:$('#hqU').value,g:$('#hqG').value,mn:num($('#hqMin').value),mx:num($('#hqMax').value)}}
+function hqFil(v){return !!(v.t!=='all'||v.s||v.f||v.u||v.g||v.mn>0||v.mx>0)}
+function hqHit(q,str){if(!q)return true;str=String(str).toLowerCase();return q.split(/\s+/).every(function(w){return str.indexOf(w)>-1})}
+function hqRender(){
+  var box=$('#hqRes');if(!box)return;var v=hqVals(),fil=hqFil(v),on=!!(v.q||fil);
+  $('#dash').hidden=on;box.hidden=!on;$('#hqAdv').classList.toggle('pri',fil);
+  if(!on){box.innerHTML='';return}
+  var lim=function(k){return (hqLim&&hqLim[k])||12},f0=v.f?new Date(v.f+'T00:00:00').getTime():0,t0=v.u?new Date(v.u+'T00:00:00').getTime()+864e5:Infinity,
+    billF=!!(v.s||v.g||v.mn>0||v.mx>0),dateF=!!(v.f||v.u),want=function(k){return v.t==='all'||v.t===k},
+    inAmt=function(a){return (!(v.mn>0)||a>=v.mn)&&(!(v.mx>0)||a<=v.mx)},groups=[];
+  var add=function(k,title,rows){if(rows.length)groups.push('<div class="sec">'+title+' · '+rows.length+'</div>'+rows.slice(0,lim(k)).map(function(r){return r}).join('')+(rows.length>lim(k)?'<button class="btn" type="button" data-more="'+k+'" style="width:100%;margin:6px 0">Show more ('+(rows.length-lim(k))+' left)</button>':''))};
+  var rw=function(k,id,ico,b,sub,num){return '<div class="row" data-hk="'+k+'" data-id="'+esc(id)+'"><div class="ico">'+ico+'</div><div class="main"><b>'+esc(b)+'</b><span>'+esc(sub)+'</span></div>'+(num?'<div class="num"><b>'+num+'</b></div>':'')+'</div>'};
+  if(want('bills')){
+    add('bills','Bills',db.bills.filter(function(b){var t=b.created||b.updated||0,du=dueOf(b),a=netAmt(b);
+      if(t<f0||t>=t0||!inAmt(a))return false;if(v.s==='due'&&!(du>0))return false;if(v.s==='paid'&&du>0)return false;
+      if(v.g&&!b.lines.some(function(x){return x.granite===v.g}))return false;
+      return hqHit(v.q,pad(b.no)+' '+(b.inv||'')+' '+(b.cust.name||'')+' '+(b.cust.mobile||'')+' '+(b.ctrN||'')+' '+b.lines.map(function(x){return x.granite}).join(' ')+' '+Math.round(b.amount||0))}).map(function(b){var du=dueOf(b);
+      return '<div class="row bill" data-id="'+b.id+'"><div class="main"><b>#'+pad(b.no)+' · '+esc(b.cust.name||'')+'</b><span>'+dstr(b.updated)+' · '+b.lines.length+' item'+(b.lines.length===1?'':'s')+pst(b)+'</span></div><div class="num"><b>'+inr(b.amount||0)+'</b><span'+(du>0?' style="color:var(--bad)"':'')+'>'+(du>0?'Due '+inr(du):(b.sqft?f2(b.sqft)+' sqft':''))+'</span></div></div>'}));
+  }
+  if(want('estimates')&&!v.s&&staffCan('Estimate')){
+    add('est','Estimates',db.estimates.filter(function(e){var t=e.updated||e.created||0;if(t<f0||t>=t0||!inAmt(e.amount||0))return false;if(v.g&&e.name!==v.g)return false;
+      return hqHit(v.q,pad(e.no||0)+' '+(e.name||'')+' '+((e.cust&&e.cust.name)||'')+' '+Math.round(e.amount||0))}).map(function(e){return rw('e',e.id,'📏',e.name||'Estimate',((e.cust&&e.cust.name)?e.cust.name+' · ':'')+dstr(e.updated||e.created||Date.now()),inr(e.amount||0))}));
+  }
+  if(!billF&&!dateF){
+    if(want('customers')&&staffCan('Customers'))add('cus','Customers',db.customers.filter(function(c){return hqHit(v.q,(c.name||'')+' '+(c.mobile||'')+' '+(c.gst||'')+' '+(c.addr||''))}).map(function(c){return rw('c',ckey(c),'👤',c.name||'?',c.mobile||'No mobile','')}));
+    if(want('staff')&&staffCan('Karigar'))add('stf','Staff',db.workers.filter(function(w){return hqHit(v.q,(w.name||'')+' '+(w.mobile||''))}).map(function(w){return rw('k',w.id,'🧑‍🔧',w.name,(w.mobile?w.mobile+' · ':'')+'₹'+f2(w.rate)+'/day','')}));
+    if(want('items')&&staffCan('Items'))add('itm','Stones & items',db.items.filter(function(i){return hqHit(v.q,(i.name||'')+' '+(i.hsn||'')+' '+(i.cat||''))}).map(function(i){return rw('i',i.id,i.type==='stone'?'🪨':'📦',i.name,i.type==='stone'?'Stone':'Item','₹'+f2(num(i.rate)))}));
+    if(want('contractors')&&staffCan('Contractors'))add('ctr','Contractors',db.contractors.filter(function(c){return hqHit(v.q,(c.name||'')+' '+(c.mobile||''))}).map(function(c){return rw('t',c.id,'🤝',c.name,c.mobile||'No mobile','')}));
+    if(want('suppliers')&&staffCan('Stock'))add('sup','Suppliers',db.suppliers.filter(function(c){return hqHit(v.q,(c.name||'')+' '+(c.mobile||''))}).map(function(c){return rw('s',c.id,'🚛',c.name,c.mobile||'No mobile','')}));
+  }
+  box.innerHTML=groups.length?groups.join(''):'<div class="empty-s">Nothing found'+(v.q?' for “'+esc(v.q)+'”':'')+'.<br>Try fewer words, or clear the filters.</div>';
+}
+(function(){var tm=0,go=function(){hqLim={};hqRender()};
+  $('#hq').addEventListener('input',function(){clearTimeout(tm);tm=setTimeout(go,120)});
+  $('#hq').addEventListener('keydown',function(e){if(e.key==='Escape'&&this.value){this.value='';go();e.stopPropagation()}});
+  ['hqT','hqS','hqF','hqU','hqG'].forEach(function(i){$('#'+i).addEventListener('change',go)});
+  ['hqMin','hqMax'].forEach(function(i){$('#'+i).addEventListener('input',function(){clearTimeout(tm);tm=setTimeout(go,200)})});
+  $('#hqAdv').onclick=function(){var b=$('#hqBox');b.hidden=!b.hidden;if(!b.hidden){var gs={};db.bills.forEach(function(x){x.lines.forEach(function(l){if(l.granite)gs[l.granite]=1})});var cu=$('#hqG').value;$('#hqG').innerHTML='<option value="">Any</option>'+Object.keys(gs).sort().map(function(g){return '<option value="'+esc(g)+'">'+esc(g)+'</option>'}).join('');$('#hqG').value=cu}};
+  $('#hqClr').onclick=function(){['hq','hqF','hqU','hqMin','hqMax'].forEach(function(i){$('#'+i).value=''});$('#hqT').value='all';$('#hqS').value='';$('#hqG').value='';go()};
+  $('#hqRes').addEventListener('click',function(e){
+    var m=e.target.closest('[data-more]');if(m){hqLim[m.dataset.more]=lim2(m.dataset.more);hqRender();return}
+    var r=e.target.closest('.row');if(!r)return;var id=r.dataset.id;
+    if(r.classList.contains('bill')){billDetail(id);return}
+    var k=r.dataset.hk;
+    if(k==='e'){var es=db.estimates.find(function(x){return x.id===id});if(es)openEst(es)}
+    else if(k==='c')ledger(id);
+    else if(k==='k'){km=(kd||todayStr()).slice(0,7);kDetail(id)}
+    else if(k==='i'){var it=db.items.find(function(x){return x.id===id});if(it){if(it.track)stHist(it);else itemForm(it)}}
+    else if(k==='t')ctrDetail(id);
+    else if(k==='s')supDetail(id)});
+  function lim2(k){return ((hqLim&&hqLim[k])||12)+30}
+  document.addEventListener('keydown',function(e){if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey||curPage!=='Home')return;var a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;if($('#mod').classList.contains('on'))return;e.preventDefault();$('#hq').focus()})
+})();
 $('#dash').addEventListener('click',function(e){
   var k=e.target.closest('[data-k]'),w=e.target.closest('[data-w]'),q=e.target.closest('[data-dw]'),r=e.target.closest('[data-dq]'),b=e.target.closest('.row.bill');
   if(k){var v=k.dataset.k;
@@ -3103,21 +3191,32 @@ function wPiece(w,pre){return r2(wPieceSq(w,pre)*num(w.pr))}
 function wEarn(w,pre){return r2(wDays(w,pre)*num(w.rate)+wPiece(w,pre))}
 function wBal(w){return r2(wEarn(w,'')-wPaid(w,''))}
 function monLbl(m){return MON[+m.slice(5,7)-1]+' '+m.slice(0,4)}
+var kStage={};
+function kEff(w){return Object.prototype.hasOwnProperty.call(kStage,w.id)?kStage[w.id]:wAtt(w,kd)}
+function kDirty(){return Object.keys(kStage).length>0}
+function kSaveAtt(){var n=0;Object.keys(kStage).forEach(function(id){var w=db.workers.find(function(x){return x.id===id});if(w){wSet(w,kd,kStage[id]);n++}});kStage={};persist();renderKarigar();toast(n?'Attendance saved for '+n+' staff':'Nothing to save')}
+function kBarUpd(){var n=Object.keys(kStage).length;$('#kBar').hidden=!n;if(n)$('#kBarT').textContent=n+' not saved yet'}
 function renderKarigar(){
   if(!kd)kd=todayStr();if(!km)km=kd.slice(0,7);$('#kDate').value=kd;
   var pre=kd.slice(0,7),tp=0;db.workers.forEach(function(w){tp+=Math.max(0,wBal(w))});
-  var cnt={P:0,H:0,A:0,N:0};db.workers.forEach(function(w){var m=wAtt(w,kd);cnt[m||'N']++});
+  var cnt={P:0,H:0,A:0,N:0};db.workers.forEach(function(w){var m=kEff(w);cnt[m||'N']++});
   var tl=function(l,v,c){return '<div><small>'+l+'</small><b'+(c?' style="color:'+c+'"':'')+'>'+v+'</b></div>'};
   $('#kSum').innerHTML=db.workers.length?tl('Staff',db.workers.length)+tl('Present',cnt.P,'var(--ok)')+tl('Half day',cnt.H,'#d97706')+tl('Absent',cnt.A,'var(--bad)')+tl('Not marked',cnt.N)+tl('To pay',inr(tp),tp>0?'var(--bad)':'var(--ok)'):'';
   if(!db.workers.length){$('#kList').innerHTML='<div class="empty-s">No staff yet.<br>Tap “＋ Staff” to add one.</div>';return}
-  $('#kList').innerHTML=db.workers.map(function(w){var m=wAtt(w,kd),b=wBal(w),rc=wRec(w,kd),pend=rc&&rc.ap==='p',
+  var kq=($('#kSearch').value||'').trim().toLowerCase(),kl=db.workers.filter(function(w){return !kq||kq.split(/\s+/).every(function(t){return (w.name+' '+(w.mobile||'')).toLowerCase().indexOf(t)>-1})});
+  if(!kl.length){$('#kList').innerHTML='<div class="empty-s">No staff matches “'+esc(kq)+'”.</div>';kBarUpd();return}
+  $('#kList').innerHTML=kl.map(function(w){var m=kEff(w),b=wBal(w),rc=wRec(w,kd),pend=rc&&rc.ap==='p',uns=Object.prototype.hasOwnProperty.call(kStage,w.id),
     role_=db.staff.some(function(z){return z.id===w.id})?'Counter':w.lon?'Worker login':'Staff',
-    lbl=pend?'⏳ Pending':m==='P'?'Present':m==='H'?'Half day':m==='A'?'Absent':'Not marked';
-    return '<div class="row kg kcard'+(m?' s'+m:'')+'" data-id="'+esc(w.id)+'"><div class="kt"><div class="av">'+esc(w.name.charAt(0).toUpperCase())+'</div><div class="kn"><b>'+esc(w.name)+'</b><small>'+role_+(w.mobile?' · '+esc(w.mobile):'')+' · ₹'+f2(w.rate)+'/day</small></div><span class="kb'+(m?' '+m:'')+'">'+lbl+'</span></div>'+
+    lbl=(pend&&!uns)?'⏳ Pending':m==='P'?'Present':m==='H'?'Half day':m==='A'?'Absent':'Not marked';if(uns)lbl+=' · not saved';
+    return '<div class="row kg kcard'+(m?' s'+m:'')+(uns?' kpend':'')+'" data-id="'+esc(w.id)+'"><div class="kt"><div class="av">'+esc(w.name.charAt(0).toUpperCase())+'</div><div class="kn"><b>'+esc(w.name)+'</b><small>'+role_+(w.mobile?' · '+esc(w.mobile):'')+' · ₹'+f2(w.rate)+'/day</small></div><span class="kb'+(m?' '+m:'')+'">'+lbl+'</span></div>'+
       '<div class="kst"><div><small>Days</small><b>'+wDays(w,pre)+'</b></div><div><small>Earned</small><b>'+inr(wEarn(w,pre))+'</b></div><div><small>Paid</small><b>'+inr(wPaid(w,pre))+'</b></div><div><small>'+(b>0?'To pay':b<0?'Advance':'Settled')+'</small><b style="color:'+(b>0?'var(--bad)':'var(--ok)')+'">'+inr(Math.abs(b))+'</b></div></div>'+
-      '<div class="kmk"><button data-at="P" class="'+(m==='P'?'on P':'')+'">Present</button><button data-at="H" class="'+(m==='H'?'on H':'')+'">Half day</button><button data-at="A" class="'+(m==='A'?'on A':'')+'">Absent</button></div></div>'}).join('');
+      '<div class="kmk"><button data-at="P" class="'+(m==='P'?'on P':'')+'">Present</button><button data-at="H" class="'+(m==='H'?'on H':'')+'">Half day</button><button data-at="A" class="'+(m==='A'?'on A':'')+'">Absent</button></div></div>'}).join('');kBarUpd();
 }
-$('#kDate').addEventListener('change',function(){kd=this.value||todayStr();km=kd.slice(0,7);renderKarigar()});
+$('#kSearch').addEventListener('input',function(){renderKarigar()});
+$('#kAll').onclick=function(){if(role==='staff'&&!staffCan('Karigar')){toast('Only the owner can do this');return}var n=0;db.workers.forEach(function(w){if(!kEff(w)){kStage[w.id]='P';n++}});if(!n)toast('Everyone is already marked');renderKarigar()};
+$('#kDisc').onclick=function(){kStage={};renderKarigar()};
+$('#kSave').onclick=kSaveAtt;
+$('#kDate').addEventListener('change',function(){var nd=this.value||todayStr();if(kDirty()){var el=this;ask('Save attendance?','You marked attendance for '+dday(Date.parse(kd+'T12:00:00'))+' but did not save it.',[{t:'Keep editing'},{t:'Don’t save',v:'n'},{t:'Save',cls:'pri',v:'s'}]).then(function(v){if(v==='s'){kSaveAtt();kd=nd}else if(v==='n'){kStage={};kd=nd}km=kd.slice(0,7);renderKarigar()});return}kd=nd;km=kd.slice(0,7);renderKarigar()});
 $('#kAdd').onclick=function(){
   if(role==='staff'){kForm(null);return}
   $('#mbox').innerHTML='<h4>Add staff</h4><p class="hint" style="margin-bottom:10px">Everyone gets attendance, advances and salary slips. Choose what he does:</p><button class="cobtn" data-a="c" style="width:100%;margin-bottom:8px">Counter / office / biller<small>Logs in to make bills. You choose his rights.</small></button><button class="cobtn" data-a="k" style="width:100%;margin-bottom:8px">Cutter / loader / worker<small>Logs in to see only his jobs. Login is optional.</small></button><div class="btns"><button class="btn" data-a="x">Cancel</button></div>';
@@ -3127,7 +3226,7 @@ $('#kList').addEventListener('click',function(e){
   var row=e.target.closest('.row');if(!row)return;var w=db.workers.find(function(x){return x.id===row.dataset.id});if(!w)return;
   var ab=e.target.closest('button[data-at]');
   if(ab){if(role==='staff'&&w.id!==ME.wid&&!staffCan('Karigar')){toast('Only the owner can do this');return}
-    wSet(w,kd,wAtt(w,kd)===ab.dataset.at?'':ab.dataset.at);persist();renderKarigar();return}
+    var cu=kEff(w),nv=cu===ab.dataset.at?'':ab.dataset.at;if(nv===wAtt(w,kd))delete kStage[w.id];else kStage[w.id]=nv;renderKarigar();return}
   km=kd.slice(0,7);kDetail(w.id);
 });
 $('#kList').addEventListener('change',function(e){var sl=e.target.closest('select[data-s]');if(!sl)return;var row=sl.closest('.row'),w=db.workers.find(function(x){return x.id===row.dataset.id});if(!w)return;
@@ -3843,7 +3942,15 @@ function bdHead(b){
   var pf=db.profile||{};
   return '<div class="bdh"><div><b>'+esc(shopName())+'</b><small>'+[pf.address?esc(pf.address):'',pf.mobile?'Ph: '+esc(pf.mobile):'',(b.tx&&pf.gst)?'GSTIN: '+esc(pf.gst):''].filter(Boolean).join('<br>')+'</small></div></div>';
 }
-function billDetail(id){
+var detId='';
+function billPdf(b,k){var c=b.cust||{},nm='Bill-'+pad(b.no)+'-'+fsafe(c.name)+'.pdf';
+  if(k==='f')k=db.pdf.lay==='tally'?'g':db.pdf.lay==='thermal'?'t':'s';
+  if(k==='t'){shareReceipt(b);return}
+  if(k==='g'){var gd=Object.assign(docOf(b),{sizes:!!db.pdf.sizes});try{shareBytes(makePdf(tallyPages(gd)),nm,'application/pdf')}catch(er){toast('Could not make the PDF')}return}
+  if(k==='z'){if(!b.lines.some(function(l){return (l.kind||'stone')==='stone'&&(l.rows||[]).length}))toast('This bill has no stone sizes');else sharePdf(Object.assign(docOf(b),{only:'sizes'}),'Sizes-'+pad(b.no)+'-'+fsafe(c.name)+'.pdf');return}
+  if(k==='y'){if(!pays(b).length)toast('No payment received yet');else shareBytes(makePdf(payPages(b)),'Payments-'+pad(b.no)+'-'+fsafe(c.name)+'.pdf','application/pdf');return}
+  sharePdf(Object.assign(docOf(b),{sizes:!!db.pdf.sizes,paysTbl:!!db.pdf.pays}),nm)}
+function billDetail(id){detId=id;
   var b=db.bills.find(function(x){return x.id===id});if(!b)return;var c=b.cust||{};
   var h='<h4>'+(b.tx?'Invoice '+esc(b.inv||pad(b.no)):'Bill #'+pad(b.no))+pst(b)+'</h4><p style="margin-bottom:10px">'+dstr(b.updated)+(b.by&&db.staff.length?' · by '+esc(b.by):'')+'</p>';
   h+=bdHead(b)+'<div class="bdw"><div class="bdl"><div class="dcard"><b>'+esc(c.name||'')+'</b>'+(c.mobile?'<span>📞 '+esc(c.mobile)+'</span>':'')+((ctrNameOf(b)||c.co)?'<span>c/o '+esc(ctrNameOf(b)||c.co)+'</span>':'')+(c.address?'<span>📍 '+esc(c.address)+'</span>':'')+
@@ -3860,7 +3967,7 @@ function billDetail(id){
   h+='<div class="sec">Payments received</div><div class="pays">'+(pays(b).length?'<div class="prow" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px"><span>Date · Paid by</span><b>Amount</b></div>':'<div class="prow"><span>No payment received yet</span></div>')+pays(b).map(function(p){return '<div class="prow"><span>'+dday(p.at)+' · '+esc(p.mode)+(p.chq?' '+esc(p.chq.no||'')+' ('+(p.chq.st==='bnc'?'bounced':p.chq.st==='clr'?'cleared':'pending')+')':'')+(p.note&&p.note!=='At billing'?' · '+esc(p.note):'')+'</span><b>'+inr(p.amt)+'</b><button class="lk d" data-pd="'+p.id+'" aria-label="Remove payment">✕</button></div>'}).join('')+
     '<div class="prow hd"><span>Received</span><b>'+inr(pd)+'</b></div><div class="prow hd"><span>Balance due</span><b style="color:'+(du>0?'var(--bad)':'var(--ok)')+'">'+inr(du)+'</b></div></div>';
   h+='</div></div>';
-  h+='<div class="btns stk">'+(du>0?'<button class="btn pri" data-a="p">Receive payment</button>':'')+'<button class="btn" data-a="f">Share PDF</button><button class="btn" data-a="g">Tally-style PDF</button><button class="btn" data-a="t">Thermal receipt</button><button class="btn" data-a="z">Sizes PDF</button><button class="btn" data-a="y">Payments PDF</button><button class="btn" data-a="j">Job / Challan</button><button class="btn" data-a="r">Return / Credit</button><button class="btn" data-a="x">Close</button><button class="btn" data-a="e">Edit bill</button></div>';
+  h+='<div class="btns stk">'+(du>0?'<button class="btn pri" data-a="p">Receive payment</button>':'')+'<button class="btn" data-a="f">📄 PDF</button><button class="btn" data-a="m" aria-label="More PDF types" title="More PDF types">▾</button><button class="btn" data-a="j">Job / Challan</button><button class="btn" data-a="r">Return / Credit</button><button class="btn" data-a="x">Close</button><button class="btn" data-a="e">Edit bill</button></div>';
   $('#mbox').innerHTML=h;$('#mod').classList.add('on');
   $('#mbox').onclick=function(e){
     var pdl=e.target.closest('[data-pd]');
@@ -3870,14 +3977,11 @@ function billDetail(id){
     var bt=e.target.closest('[data-a]');if(!bt)return;var a=bt.dataset.a;
     if(a==='p'){payForm('Receive payment · #'+pad(b.no),du,function(p){if(p){addPay(b,p);persist();counts();toast('Payment saved');refreshMoney()}billDetail(id)});return}
     if(a==='r'){if(denyStaff('Returns'))return;returnForm(id);return}
-    if(a==='t'){$('#mod').classList.remove('on');shareReceipt(b);return}
+    if(a==='m'){var fb=$('#mbox [data-a="f"]'),cm=fb&&ctxItems(fb),rc=bt.getBoundingClientRect();if(cm)ctxShow(rc.left,rc.bottom,cm.items,cm.title);return}
+    if('fgtzy'.indexOf(a)>-1){$('#mod').classList.remove('on');billPdf(b,a);return}
     $('#mod').classList.remove('on');
     if(a==='j')jobForm(id);
     else if(a==='e')openBill(id);
-    else if(a==='f')sharePdf(Object.assign(docOf(b),{sizes:!!db.pdf.sizes,paysTbl:!!db.pdf.pays}),'Bill-'+pad(b.no)+'-'+fsafe(c.name)+'.pdf');
-    else if(a==='g'){var gd=Object.assign(docOf(b),{sizes:!!db.pdf.sizes});try{shareBytes(makePdf(tallyPages(gd)),'Bill-'+pad(b.no)+'-'+fsafe(c.name)+'.pdf','application/pdf')}catch(er){toast('Could not make the PDF')}}
-    else if(a==='z'){if(!b.lines.some(function(l){return (l.kind||'stone')==='stone'&&(l.rows||[]).length}))toast('This bill has no stone sizes');else sharePdf(Object.assign(docOf(b),{only:'sizes'}),'Sizes-'+pad(b.no)+'-'+fsafe(c.name)+'.pdf')}
-    else if(a==='y'){if(!pays(b).length)toast('No payment received yet');else shareBytes(makePdf(payPages(b)),'Payments-'+pad(b.no)+'-'+fsafe(c.name)+'.pdf','application/pdf')}
   };
 }
 /* ---------- stock, suppliers and purchases ---------- */
@@ -4888,6 +4992,8 @@ function ctxExtra(row){
   return o.length?{title:'',items:o}:null;
 }
 function ctxItems(t){
+  var pdb=t.closest('#mbox [data-a="f"]');
+  if(pdb&&detId){var pb=db.bills.find(function(x){return x.id===detId});if(pb){var mk=function(k){return function(){$('#mod').classList.remove('on');billPdf(pb,k)}};return {title:'PDF · #'+pad(pb.no),items:[{t:'📄 Bill PDF (as set in Settings)',fn:mk('f')},{t:'📑 Tally-style GST invoice',fn:mk('g')},{t:'🧾 Thermal receipt',fn:mk('t')},{t:'📐 Sizes page only',fn:mk('z')},{t:'💰 Payments statement',fn:mk('y')}]}}}
   var nv=t.closest('#nav button[data-p]');
   if(nv){var k=navKey(nv);return {title:nv.textContent.replace(/\d+$/,'').trim(),items:[{t:'⬆ Move to top',fn:function(){navMove(k,'top')}},{t:'▲ Move up',fn:function(){navMove(k,'up')}},{t:'▼ Move down',fn:function(){navMove(k,'dn')}},{t:'↕ Arrange menu…',fn:navOrderForm},{t:'Reset order',fn:function(){navSave(null)}}]}}
   var lr=t.closest('#mod .lrow');
@@ -4905,7 +5011,7 @@ function ctxItems(t){
     title='Bill #'+pad(bl.no)+' · '+((bl.cust&&bl.cust.name)||'');
     out.push({t:'📄 Open details',fn:function(){billDetail(bl.id)}});
     if(dueOf(bl)>0)out.push({t:'₹ Receive payment',fn:via('p')});
-    out.push({t:'📤 Share PDF',fn:via('f')},{t:'🧾 Thermal receipt',fn:via('t')},{t:'🚚 Job / Challan',fn:via('j')},{t:'↩ Return / Credit',fn:via('r')});
+    out.push({t:'📄 PDF',fn:function(){billPdf(bl,'f')}},{t:'📑 Tally-style GST invoice',fn:function(){billPdf(bl,'g')}},{t:'🧾 Thermal receipt',fn:function(){billPdf(bl,'t')}},{t:'📐 Sizes page only',fn:function(){billPdf(bl,'z')}},{t:'💰 Payments statement',fn:function(){billPdf(bl,'y')}},{t:'🚚 Job / Challan',fn:via('j')},{t:'↩ Return / Credit',fn:via('r')});
   }
   var it=curPage==='Stock'&&skTab==='stock'&&row.dataset.id?db.items.find(function(x){return x.id===row.dataset.id}):null;
   if(it){title=it.name;out.push({t:'📦 Stock details',fn:function(){stHist(it)}},{t:'± Adjust stock',fn:function(){adjForm(it)}},{t:'🔳 QR label',fn:function(){itemQr(it)}})}
@@ -4919,14 +5025,14 @@ function ctxItems(t){
 function ctxOpen(t,x,y){var r=ctxItems(t);if(r)ctxShow(x,y,r.items,r.title);return !!r}
 document.addEventListener('contextmenu',function(e){if(!e.target.closest)return;
   var tch=Date.now()-ctxTouchAt<1500;if(tch&&Date.now()-ctxLast<900){e.preventDefault();return}
-  if(e.target.closest('input,textarea,select,#co,#lock')||(e.target.closest('#mod')&&!e.target.closest('.lrow')))return;
+  if(e.target.closest('input,textarea,select,#co,#lock')||(e.target.closest('#mod')&&!e.target.closest('.lrow,#mbox [data-a="f"]')))return;
   if(ctxOpen(e.target,e.clientX,e.clientY)){ctxByTouch=tch;e.preventDefault()}});
 document.addEventListener('touchstart',function(e){
-  ctxTouchAt=Date.now();clearTimeout(ctxTm);if(e.touches.length!==1||!e.target.closest||e.target.closest('input,textarea,select,#co,#lock,#ctxm')||(e.target.closest('#mod')&&!e.target.closest('.lrow')))return;
+  ctxTouchAt=Date.now();clearTimeout(ctxTm);if(e.touches.length!==1||!e.target.closest||e.target.closest('input,textarea,select,#co,#lock,#ctxm')||(e.target.closest('#mod')&&!e.target.closest('.lrow,#mbox [data-a="f"]')))return;
   var t=e.target,p=e.touches[0];ctxXY=[p.clientX,p.clientY];
   ctxTm=setTimeout(function(){if(Date.now()-ctxLast<300)return;if(ctxOpen(t,ctxXY[0],ctxXY[1])){ctxByTouch=true;try{navigator.vibrate&&navigator.vibrate(18)}catch(er){}}},550)},{passive:true});
 document.addEventListener('touchmove',function(e){if(!ctxXY)return;var p=e.touches[0];if(!p)return;if(Math.abs(p.clientX-ctxXY[0])>10||Math.abs(p.clientY-ctxXY[1])>10)clearTimeout(ctxTm)},{passive:true});
-['touchend','touchcancel'].forEach(function(n){document.addEventListener(n,function(e){clearTimeout(ctxTm);if(ctxByTouch&&Date.now()-ctxLast<700&&e.cancelable&&e.target.closest&&e.target.closest('.row,.lrow,#nav'))e.preventDefault()},{passive:false})});
+['touchend','touchcancel'].forEach(function(n){document.addEventListener(n,function(e){clearTimeout(ctxTm);if(ctxByTouch&&Date.now()-ctxLast<700&&e.cancelable&&e.target.closest&&e.target.closest('.row,.lrow,#nav,#mbox [data-a="f"]'))e.preventDefault()},{passive:false})});
 document.addEventListener('click',function(e){if(ctxByTouch&&Date.now()-ctxLast<700&&!e.target.closest('#ctxm')){e.preventDefault();e.stopPropagation();return}if(!e.target.closest('#ctxm'))ctxHide()},true);
 window.addEventListener('scroll',ctxHide,true);document.addEventListener('keydown',function(e){if(e.key==='Escape')ctxHide()});
 var ordBtn=$('#ordBtn');if(ordBtn)ordBtn.onclick=navOrderForm;
@@ -5182,7 +5288,8 @@ function markTheme(){document.querySelectorAll('#thSeg button').forEach(function
 $('#lvSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;db.view=b.dataset.v==='k'?'classic':'compact';persist();applyView();toast(cmp()?'Compact list':'Classic list')});
 $('#thSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;thSel=b.dataset.t;applyTheme(thSel);markTheme()});
 var pf={sName:'name',sAddr:'address',sMob:'mobile',sMail:'email',sGst:'gst',sGstOn:'gstOn',sDefG:'defGst',sPre:'pre',sBankN:'bankN',sBankA:'bankA',sBankI:'bankI',sBankB:'bankB',sUpi:'upi',sTerm:'terms'};
-function renderPdfOpts(){$('#pdW').value=db.pdf.rw==='58'?'58':'80';$('#pdS').checked=!!db.pdf.sizes;$('#pdP').checked=!!db.pdf.pays;$('#pdE').checked=!!db.pdf.est}
+function renderPdfOpts(){$('#pdL').value=db.pdf.lay==='tally'||db.pdf.lay==='thermal'?db.pdf.lay:'std';$('#pdW').value=db.pdf.rw==='58'?'58':'80';$('#pdS').checked=!!db.pdf.sizes;$('#pdP').checked=!!db.pdf.pays;$('#pdE').checked=!!db.pdf.est}
+$('#pdL').addEventListener('change',function(){db.pdf.lay=this.value;persist();toast('Saved')});
 $('#pdW').addEventListener('change',function(){db.pdf.rw=this.value;persist();toast('Saved')});
 [['pdS','sizes'],['pdP','pays'],['pdE','est']].forEach(function(x){$('#'+x[0]).addEventListener('change',function(){db.pdf[x[1]]=this.checked?1:0;persist();toast('Saved')})});
 function renderShop(){$('#shopN').textContent=db.profile.name||''}
@@ -5979,13 +6086,14 @@ var LIC_GUEST=['Home','Bills','Estimate','Measure','Pick','Qty','Customers','Ite
 var LIC_RO=['Home','Bills','Estimate','Measure','Customers','Dues','Cash','Summary','Reports','Settings'];
 function licLoad(){try{LIC=JSON.parse(localStorage.getItem('gb_lic_'+CO)||'null')}catch(e){LIC=null}}
 function licOn(){return !!(window.GB_UPD&&LIC&&LIC.state&&!WK)}
+function licNow(){var n=Date.now(),m=0;try{m=+localStorage.getItem('gb_tmax')||0}catch(e){}if(n<m)return m;try{localStorage.setItem('gb_tmax',String(n))}catch(e){}return n}
 function licSt(){
   if(!licOn())return 'ok';
-  if((LIC.state==='guest'||(LIC.plan==='full'&&LIC.until))&&LIC.until&&Date.now()>LIC.until&&LIC.state!=='blocked')return 'expired';
+  if((LIC.state==='guest'||(LIC.plan==='full'&&LIC.until))&&LIC.until&&licNow()>LIC.until&&LIC.state!=='blocked')return 'expired';
   return LIC.state}
 function licCan(p){var s=licSt();if(s==='ok')return true;if(p==='Admin')return !!(LIC&&LIC.admin);return (s==='guest'?LIC_GUEST:LIC_RO).indexOf(p)>-1}
 function licH(){if(ROLE==='o'){var c=coFind(CO);return c&&c.h||''}return WHO&&WHO.h||''}
-function licDays(){return LIC&&LIC.until?Math.max(0,Math.ceil((LIC.until-Date.now())/864e5)):0}
+function licDays(){return LIC&&LIC.until?Math.max(0,Math.ceil((LIC.until-licNow())/864e5)):0}
 function licBarRender(){
   var b=$('#licBar');if(!b)return;var s=licSt(),t='',bad=false;
   if(s==='guest')t='Guest plan · '+licDays()+' day'+(licDays()===1?'':'s')+' left · Estimates only'+(ROLE==='o'?' · Tap to enter a product key':'');
@@ -6003,7 +6111,7 @@ function licFetch(){
   if(!window.GB_UPD||WK||!CO)return Promise.resolve();var h=licH();if(!h)return Promise.resolve();
   var st=null;if(ROLE==='o'){var last=0;db.bills.forEach(function(b){if((b.created||0)>last)last=b.created});st={bills:db.bills.length,est:(db.estimates||[]).length,cust:db.customers.length,last:last,ver:APP_VER}}
   return gpost({action:'lic_get',co:CO,h:h,st:st}).then(function(r){
-    if(r&&r.ok&&r.lic){LIC=r.lic;LIC.admin=!!r.admin;LIC.pin=!!r.pin;LIC.at=Date.now();try{localStorage.setItem('gb_lic_'+CO,JSON.stringify(LIC))}catch(e){}licApply();setTimeout(licRenewNag,1500)}}).catch(function(){})}
+    if(r&&r.ok&&r.lic){LIC=r.lic;LIC.admin=!!r.admin;LIC.pin=!!r.pin;LIC.at=Date.now();try{localStorage.setItem('gb_lic_'+CO,JSON.stringify(LIC));localStorage.setItem('gb_tmax',String(Date.now()))}catch(e){}licApply();setTimeout(licRenewNag,1500)}}).catch(function(){})}
 function licLocked(p){
   var s=licSt(),own=ROLE==='o';
   $('#mbox').innerHTML='<h4>🔒 Locked</h4><p>'+(s==='guest'?'The guest plan has Estimates only. Enter a product key to unlock everything.':s==='blocked'?'This company is switched off. Please contact support.':'Your plan has ended. You can still view and export your data. Enter a product key to continue.')+(own||s==='blocked'?'':'<br>Please ask the owner.')+'</p><div class="btns">'+(own&&s!=='blocked'?'<button class="btn pri" data-a="k">Enter product key</button>':'')+'<button class="btn" data-a="x">Close</button></div>';
@@ -6919,7 +7027,7 @@ function bioOn(){var c=bioCur();return bioList().some(function(b){return bioSame
 function bioStore(l){try{if(l.length)localStorage.setItem('gb_bio',JSON.stringify(l));else localStorage.removeItem('gb_bio')}catch(e){}}
 function bioOffer(){if(!bioPlug()||bioOn()||!bioCur())return;var k='gb_bq_'+CO+'_'+((WHO&&WHO.user)||'o');try{if(localStorage.getItem(k))return;localStorage.setItem(k,'1')}catch(e){return}
   ask('Use your fingerprint to log in?','Next time you can log in on this phone with your fingerprint. You can change this later in Settings.',[{t:'Not now'},{t:'Turn on',cls:'pri',v:1}]).then(function(v){if(v)bioToggle()})}
-function bioHtml(){if(!bioPlug())return '';return '<div class="sec">Fingerprint login</div><div class="card" style="padding:14px"><p class="hint" style="margin:0 0 8px">'+(bioOn()?'On. You can log in on this phone with your fingerprint.':'Log in with your fingerprint instead of typing the password. Works on this phone only.')+'</p><button class="btn '+(bioOn()?'':'pri')+'" data-bio="1">'+(bioOn()?'Turn off':'Turn on')+'</button></div>'}
+function bioHtml(){if(!bioPlug())return '';return '<div class="card srow"><div class="st"><b>🔐 Fingerprint login</b><span class="hint">'+(bioOn()?'On. You can log in on this phone with your fingerprint.':'Log in with your fingerprint instead of typing the password. Works on this phone only.')+'</span></div><button class="btn '+(bioOn()?'':'pri')+'" data-bio="1">'+(bioOn()?'Turn off':'Turn on')+'</button></div>'}
 function bioWire(el){var b=el&&el.querySelector('[data-bio]');if(b)b.onclick=bioToggle}
 function bioAsk(why){var P=bioPlug();return P.checkBiometry().then(function(i){if(!i||!i.isAvailable){var e=new Error('No fingerprint is set up on this phone. Add one in the phone Settings first');e.nofp=1;throw e}
   return P.internalAuthenticate({reason:why,androidTitle:'Granite Book',cancelTitle:'Cancel',allowDeviceCredential:false,androidConfirmationRequired:false})})}
