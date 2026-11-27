@@ -46,6 +46,11 @@ jobs:
       - name: Make the Android app icon (teal G)
         continue-on-error: true
         run: |
+          mkdir -p assets
+          for f in icon-only icon-foreground icon-background; do
+            if [ ! -f assets/$f.png ] && [ -f $f.png ]; then cp $f.png assets/$f.png; fi
+            if [ ! -f assets/$f.png ]; then echo "::warning::$f.png not found in the repo (root or assets/), so the default icon will be used."; fi
+          done
           npx --yes @capacitor/assets generate --android --assetPath assets --iconBackgroundColor '#0f766e' --iconBackgroundColorDark '#0f766e'
           ls android/app/src/main/res | head -20
       - name: Sign with the private release key and raise the version
